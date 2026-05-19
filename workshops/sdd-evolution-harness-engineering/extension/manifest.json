@@ -1,0 +1,37 @@
+{
+  "$comment": "Extension manifest for the sdd-evolution-harness-engineering workshop. The shape mirrors the documented @github/copilot-sdk extension format observed at implementation time (1.0.0-beta.4). This file is consumed by the SDK adapter under extension/commands/ and is purely informational for the offline bash entrypoint.",
+  "name": "sdd-evolution-harness-engineering",
+  "displayName": "SDD-Evolution Harness Engineering",
+  "version": "1.0.0",
+  "type": "workshop",
+  "entrypoint": {
+    "offline": "bin/workshop",
+    "sdk": "commands/index.ts"
+  },
+  "sdk": {
+    "package": "@github/copilot-sdk",
+    "version": "1.0.0-beta.4",
+    "node": ">=20"
+  },
+  "permissions": {
+    "filesystemWrite": [
+      "workshops/sdd-evolution-harness-engineering/",
+      ".workshop-state.json",
+      ".workshop-drafts/",
+      ".workshop-scaffold-output/",
+      ".workshop-fanout/",
+      ".workshop-install-marker",
+      ".gitignore",
+      ".git/hooks/"
+    ],
+    "git": ["rev-parse", "worktree", "diff", "merge-base", "branch", "rev-list", "cat-file"],
+    "hookInstall": true,
+    "network": "none-in-offline-mode"
+  },
+  "sideBySideInstall": "refused-use-upgrade",
+  "commands": [
+    "start", "install-hooks", "next", "status", "verify", "coach", "diagnose",
+    "reset", "run", "debrief", "scaffold", "override", "reconcile", "onboard",
+    "install-promote-ephemeral", "fan-out", "accept-draft", "reject-draft", "help"
+  ]
+}
