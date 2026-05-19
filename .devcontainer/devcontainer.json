@@ -1,5 +1,5 @@
 {
-    "name": "soft-factory",
+    "name": "toolio",
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
     // "runArgs": [
     //     "--network","host"
@@ -66,7 +66,7 @@
         // "UV_PROJECT_ENVIRONMENT": "/home/vscode/.venv",
         // "PYTHONPATH": "/workspaces/101-copilot-sdd/src:${PYTHONPATH}"
     // },
-    "postStartCommand": "tmux -S .devcontainer/.tmux-shared has-session -t soft-factory 2>/dev/null || tmux -S .devcontainer/.tmux-shared new -d -s soft-factory",
+    "postStartCommand": "tmux -S .devcontainer/.tmux-shared has-session -t toolio 2>/dev/null || tmux -S .devcontainer/.tmux-shared new -d -s toolio",
     "remoteUser": "vscode",
     "hostRequirements": {
         "memory": "4gb"
