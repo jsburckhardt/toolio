@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jsburckhardt/toolio/blob/main/schemas/workshop.schema.json",
+  "title": "Workshop Manifest",
+  "description": "Schema for workshop.json manifests in the Toolio repository",
+  "type": "object",
+  "required": ["name", "displayName", "version", "description", "author", "license", "difficulty", "estimatedDuration", "prerequisites", "objectives"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema file"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Machine-readable workshop identifier (must match folder name)"
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable workshop name"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+",
+      "description": "Semantic version"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Brief description of the workshop"
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Author or maintainer"
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1,
+      "description": "SPDX license identifier"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["beginner", "intermediate", "advanced"],
+      "description": "Workshop difficulty level"
+    },
+    "estimatedDuration": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Estimated time to complete (e.g., 2h, 30m)"
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Skills or tools needed before starting"
+    },
+    "objectives": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Learning objectives"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Discovery tags"
+    }
+  },
+  "additionalProperties": false
+}

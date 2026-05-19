@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schemas/tool.schema.json",
+  "name": "bad-type-tool",
+  "displayName": "Bad Type Tool",
+  "version": "1.0.0",
+  "description": "A tool with an invalid type value",
+  "author": "test-author",
+  "license": "MIT",
+  "type": "unknown-type",
+  "tags": ["test"],
+  "entrypoint": "main.sh"
+}

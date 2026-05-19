@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jsburckhardt/toolio/blob/main/schemas/tool.schema.json",
+  "title": "Tool Manifest",
+  "description": "Schema for tool.json manifests in the Toolio repository",
+  "type": "object",
+  "required": ["name", "displayName", "version", "description", "author", "license", "type", "tags", "entrypoint"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema file"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Machine-readable tool identifier (must match folder name)"
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable tool name"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+",
+      "description": "Semantic version"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Brief description of what this tool does"
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Author or maintainer"
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1,
+      "description": "SPDX license identifier"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["agent-instruction", "script", "config", "skill", "extension"],
+      "description": "Tool category"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Discovery tags"
+    },
+    "platforms": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Compatible platforms (e.g., vscode-copilot, claude-code, opencode, generic)"
+    },
+    "entrypoint": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Relative path to the main tool file or instruction"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Other tools this depends on (by slug)"
+    },
+    "minAgentVersion": {
+      "type": ["string", "null"],
+      "description": "Minimum agent version required"
+    }
+  },
+  "additionalProperties": false
+}
