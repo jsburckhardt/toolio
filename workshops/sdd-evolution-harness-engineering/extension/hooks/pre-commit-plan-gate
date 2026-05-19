@@ -1,0 +1,26 @@
+# installed by sdd-evolution-harness-engineering workshop
+#!/usr/bin/env bash
+# pre-commit-plan-gate — enforces that any commit modifying project/issues/<N>/plan/
+# has both an action plan and a task breakdown.
+set -e
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+violations=()
+while IFS= read -r f; do
+  case "$f" in
+    project/issues/*/plan/*)
+      issue_num="$(echo "$f" | sed -E 's|^project/issues/([^/]+)/.*$|\1|')"
+      ap="${ROOT}/project/issues/${issue_num}/plan/01-action-plan.md"
+      tb="${ROOT}/project/issues/${issue_num}/plan/02-task-breakdown.md"
+      [ -f "$ap" ] || violations+=("missing ${ap}")
+      [ -f "$tb" ] || violations+=("missing ${tb}")
+      ;;
+  esac
+done < <(git diff --cached --name-only)
+if [ "${#violations[@]}" -gt 0 ]; then
+  echo "pre-commit-plan-gate: FAIL" >&2
+  echo "Failed invariant: project/issues/<N>/plan/ requires 01-action-plan.md + 02-task-breakdown.md" >&2
+  for v in "${violations[@]}"; do echo "  - ${v}" >&2; done
+  echo "Remediation: create the missing plan files before committing." >&2
+  exit 1
+fi
+exit 0

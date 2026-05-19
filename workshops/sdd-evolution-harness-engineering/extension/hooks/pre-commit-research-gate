@@ -1,0 +1,30 @@
+# installed by sdd-evolution-harness-engineering workshop
+#!/usr/bin/env bash
+# pre-commit-research-gate — enforces that any commit modifying project/issues/<N>/research/
+# has a 00-research.md file present.
+set -e
+
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+violations=()
+
+while IFS= read -r f; do
+  case "$f" in
+    project/issues/*/research/*)
+      issue_num="$(echo "$f" | sed -E 's|^project/issues/([^/]+)/.*$|\1|')"
+      brief="${ROOT}/project/issues/${issue_num}/research/00-research.md"
+      if [ ! -f "$brief" ]; then
+        violations+=("missing ${brief} for staged file ${f}")
+      fi
+      ;;
+  esac
+done < <(git diff --cached --name-only)
+
+if [ "${#violations[@]}" -gt 0 ]; then
+  echo "pre-commit-research-gate: FAIL" >&2
+  echo "Failed invariant: every issue under project/issues/<N>/research/ must have a 00-research.md" >&2
+  echo "Violations:" >&2
+  for v in "${violations[@]}"; do echo "  - ${v}" >&2; done
+  echo "Remediation: create project/issues/<N>/research/00-research.md before committing files under that path." >&2
+  exit 1
+fi
+exit 0
