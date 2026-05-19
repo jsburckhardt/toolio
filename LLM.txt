@@ -31,3 +31,4 @@ schemas/tool.schema.json                                       — JSON Schema f
 schemas/workshop.schema.json                                   — JSON Schema for workshop.json manifests (Draft 2020-12)
 scripts/rebuild-registry.sh                                    — Registry rebuild script (bash + jq)
 .github/workflows/validate.yml                                 — CI schema validation and registry consistency workflow
+workshops/sdd-evolution-harness-engineering/                 — Advanced interactive workshop: SDD evolution harness (RPIV pipeline, sensors, drift detection, brownfield onboarding)

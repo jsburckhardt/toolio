@@ -1,0 +1,27 @@
+{
+  "$schema": "../../schemas/workshop.schema.json",
+  "name": "sdd-evolution-harness-engineering",
+  "displayName": "SDD-Evolution Harness Engineering",
+  "version": "1.0.0",
+  "description": "Interactive, harness-driven workshop that teaches Spec-Driven Development evolution: build computational guides and sensors, the four-stage RPIV pipeline (Research, Plan, Implement, Verify), drift detection, draft-acceptance scaffolders, and brownfield onboarding via a Copilot CLI extension with a POSIX-bash offline fallback.",
+  "author": "jsburckhardt",
+  "license": "MIT",
+  "difficulty": "advanced",
+  "estimatedDuration": "3h15m",
+  "prerequisites": [
+    "Comfort with git plumbing (worktrees, hooks, rebase, reset)",
+    "POSIX shell familiarity",
+    "Read AGENTS.md and at least one ADR in this repository",
+    "Devcontainer with flock, jq, node, and check-jsonschema"
+  ],
+  "objectives": [
+    "Drive Research, Plan, Implement, and Verify stages from a single command surface",
+    "Install computational sensors that gate commits on RPIV invariants",
+    "Detect harness drift across the six git triggers and reconcile state",
+    "Scaffold ADRs and core-components as draft candidates that never auto-mutate canonical files",
+    "Inspect a repository through the 2×2 (computational/inferential × guides/sensors) lens",
+    "Onboard a brownfield project safely with symlink-escape refusal and secret redaction",
+    "Operate fully offline through the bash entrypoint when the Copilot SDK is unavailable"
+  ],
+  "tags": ["sdd", "harness", "rpiv", "advanced", "extension", "copilot-sdk", "interactive"]
+}
