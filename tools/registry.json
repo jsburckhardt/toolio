@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-05-19T09:33:27Z",
+  "tools": [
+    {
+      "slug": "devcontainer-toolio",
+      "path": "tools/devcontainer-toolio",
+      "manifest": "tools/devcontainer-toolio/tool.json"
+    },
+    {
+      "slug": "soft-factory-agents",
+      "path": "tools/soft-factory-agents",
+      "manifest": "tools/soft-factory-agents/tool.json"
+    }
+  ],
+  "workshops": [
+    {
+      "slug": "creating-your-first-tool",
+      "path": "workshops/creating-your-first-tool",
+      "manifest": "workshops/creating-your-first-tool/workshop.json"
+    }
+  ]
+}
