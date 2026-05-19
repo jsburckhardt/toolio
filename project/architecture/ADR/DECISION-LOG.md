@@ -6,7 +6,8 @@ This file is the single registry of all architectural decisions and core-compone
 
 | ID | Title | Status | Date |
 |----|-------|--------|------|
-| _No ADRs yet. Copy `ADR-0001-template.md` in this directory and rename it._ | | | |
+| ADR-0002 | Repository Layout Standard | Accepted | 2025-06-20 |
+| ADR-0003 | Tool and Workshop Packaging Convention | Accepted | 2025-06-20 |
 
 ## Core-Components
 
@@ -23,3 +24,17 @@ Short, actionable statements derived from ADRs and core-components. More than on
 | 1 | Enforce Conventional Commits v1.0.0 on every commit message | CORE-COMPONENT-0002 | 2026-05-05 |
 | 2 | Require Conventional Commits format on PR titles | CORE-COMPONENT-0002 | 2026-05-05 |
 | 3 | Require Co-authored-by trailer on all AI-authored commits | CORE-COMPONENT-0002 | 2026-05-05 |
+| 4 | Place all reusable tools under the top-level tools/ directory | ADR-0002 | 2025-06-20 |
+| 5 | Place all training content under the top-level workshops/ directory | ADR-0002 | 2025-06-20 |
+| 6 | Place JSON Schema validation files under the top-level schemas/ directory | ADR-0002 | 2025-06-20 |
+| 7 | Place build and maintenance scripts under the top-level scripts/ directory | ADR-0002 | 2025-06-20 |
+| 8 | Store registry.json inside tools/ as a derived file | ADR-0002 | 2025-06-20 |
+| 9 | Exclude hidden directories from tool discovery scanning | ADR-0002 | 2025-06-20 |
+| 10 | Require tool.json manifest in every tool directory with fields: name, displayName, version, description, author, license, type, tags, entrypoint | ADR-0003 | 2025-06-20 |
+| 11 | Require workshop.json manifest in every workshop directory with fields: name, displayName, version, description, author, license, difficulty, estimatedDuration, prerequisites, objectives | ADR-0003 | 2025-06-20 |
+| 12 | Restrict tool type to enum: agent-instruction, script, config, skill, extension | ADR-0003 | 2025-06-20 |
+| 13 | Enforce slug naming pattern ^[a-z0-9][a-z0-9-]*$ for tool and workshop directories | ADR-0003 | 2025-06-20 |
+| 14 | Use JSON Schema Draft 2020-12 for all schema definitions | ADR-0003 | 2025-06-20 |
+| 15 | Use check-jsonschema (Python) for JSON Schema validation in CI and locally | ADR-0003 | 2025-06-20 |
+| 16 | Generate registry.json via scripts/rebuild-registry.sh using bash and jq | ADR-0003 | 2025-06-20 |
+| 17 | Prohibit hand-editing of tools/registry.json | ADR-0003 | 2025-06-20 |
