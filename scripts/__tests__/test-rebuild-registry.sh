@@ -154,6 +154,30 @@ rm -rf "$EXT_DIR"
 cleanup "$TMPDIR"
 
 echo ""
+echo "=== Test: Symlink prefix collision (repo-evil) is rejected ==="
+TMPDIR=$(setup_temp_repo)
+# Create an external directory whose path starts with REPO_ROOT but is not inside it
+EVIL_DIR="${TMPDIR}-evil"
+mkdir -p "$EVIL_DIR"
+cat > "$EVIL_DIR/tool.json" <<'EOF'
+{"name":"prefix-evil","displayName":"Prefix Evil","version":"1.0.0","description":"test","author":"test","license":"MIT","type":"script","tags":["test"],"entrypoint":"run.sh"}
+EOF
+ln -s "$EVIL_DIR" "$TMPDIR/tools/prefix-evil"
+stderr_output=$(cd "$TMPDIR" && bash scripts/rebuild-registry.sh 2>&1 >/dev/null || true)
+if echo "$stderr_output" | grep -qi "reject\|escape\|root"; then
+  pass "Prefix collision symlink rejected"
+else
+  fail "Prefix collision" "no rejection for symlink to ${TMPDIR}-evil"
+fi
+if [ -f "$TMPDIR/tools/registry.json" ] && ! jq -e '.tools[] | select(.slug == "prefix-evil")' "$TMPDIR/tools/registry.json" &>/dev/null; then
+  pass "Prefix collision not in registry"
+else
+  fail "Prefix collision registry" "prefix-evil appeared in registry"
+fi
+rm -rf "$EVIL_DIR"
+cleanup "$TMPDIR"
+
+echo ""
 echo "=== Test: Missing jq produces error ==="
 TMPDIR=$(setup_temp_repo)
 # Create a minimal bin dir with essential tools but NOT jq

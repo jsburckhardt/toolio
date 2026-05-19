@@ -41,7 +41,7 @@ validate_path() {
   local dir_path="$1"
   local resolved
   resolved="$(realpath "$dir_path" 2>/dev/null)" || return 1
-  if [[ "$resolved" != "$REPO_ROOT"* ]]; then
+  if [[ "$resolved" != "$REPO_ROOT" && "$resolved" != "$REPO_ROOT/"* ]]; then
     echo "WARNING: Rejecting '$dir_path' — resolved path escapes repository root" >&2
     return 1
   fi

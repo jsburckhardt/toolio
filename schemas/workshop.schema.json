@@ -22,8 +22,8 @@
     },
     "version": {
       "type": "string",
-      "pattern": "^\\d+\\.\\d+\\.\\d+",
-      "description": "Semantic version"
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version (e.g., 1.0.0)"
     },
     "description": {
       "type": "string",
