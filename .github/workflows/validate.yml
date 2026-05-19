@@ -1,0 +1,53 @@
+name: Validate Schemas and Registry
+
+on:
+  pull_request:
+
+jobs:
+  validate-schemas:
+    name: Validate Manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install check-jsonschema
+        run: pip install check-jsonschema
+
+      - name: Validate tool manifests
+        run: |
+          shopt -s nullglob
+          tool_files=(tools/*/tool.json)
+          if [ ${#tool_files[@]} -gt 0 ]; then
+            check-jsonschema --schemafile schemas/tool.schema.json "${tool_files[@]}"
+          else
+            echo "No tool manifests found — skipping"
+          fi
+
+      - name: Validate workshop manifests
+        run: |
+          shopt -s nullglob
+          workshop_files=(workshops/*/workshop.json)
+          if [ ${#workshop_files[@]} -gt 0 ]; then
+            check-jsonschema --schemafile schemas/workshop.schema.json "${workshop_files[@]}"
+          else
+            echo "No workshop manifests found — skipping"
+          fi
+
+  check-registry:
+    name: Check Registry Consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Rebuild registry
+        run: bash scripts/rebuild-registry.sh
+
+      - name: Check registry is up to date
+        run: |
+          if ! git diff --exit-code tools/registry.json; then
+            echo "ERROR: tools/registry.json is out of date. Run 'scripts/rebuild-registry.sh' and commit the result." >&2
+            exit 1
+          fi
