@@ -1,0 +1,11 @@
+{
+  "$schema": "../../schemas/tool.schema.json",
+  "name": "missing-field-tool",
+  "displayName": "Missing Field Tool",
+  "version": "1.0.0",
+  "author": "test-author",
+  "license": "MIT",
+  "type": "script",
+  "tags": ["test"],
+  "entrypoint": "main.sh"
+}

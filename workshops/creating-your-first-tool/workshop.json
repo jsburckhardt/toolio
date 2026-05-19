@@ -1,0 +1,20 @@
+{
+  "$schema": "../../schemas/workshop.schema.json",
+  "name": "creating-your-first-tool",
+  "displayName": "Creating Your First Tool",
+  "version": "1.0.0",
+  "description": "Hands-on workshop that walks you through creating, packaging, and contributing a new tool to the Toolio repository",
+  "author": "jsburckhardt",
+  "license": "MIT",
+  "difficulty": "beginner",
+  "estimatedDuration": "30m",
+  "prerequisites": ["Basic Git knowledge", "Access to a terminal", "Repository cloned locally"],
+  "objectives": [
+    "Understand the Toolio tool packaging structure",
+    "Create a tool.json manifest with required fields",
+    "Write a tool README with usage examples",
+    "Run the registry rebuild script",
+    "Submit a PR following the RPIV pipeline"
+  ],
+  "tags": ["getting-started", "tools", "contributing", "beginner"]
+}

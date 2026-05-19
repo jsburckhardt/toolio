@@ -1,0 +1,12 @@
+{
+  "$schema": "../../schemas/tool.schema.json",
+  "name": "valid-example-tool",
+  "displayName": "Valid Example Tool",
+  "version": "1.0.0",
+  "description": "A valid tool for testing schema validation",
+  "author": "test-author",
+  "license": "MIT",
+  "type": "script",
+  "tags": ["test", "example"],
+  "entrypoint": "main.sh"
+}

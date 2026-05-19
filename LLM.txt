@@ -24,3 +24,10 @@ project/architecture/core-components/CORE-COMPONENT-0001-template.md — Core-co
 project/architecture/core-components/CORE-COMPONENT-0002-commit-standards.md — Commit standards (Conventional Commits, Co-authored-by)
 project/architecture/core-components/README.md                 — Core-components index
 project/issues/README.md                                       — Issues index and canonical structure
+tools/README.md                                                — Tool catalogue organized by type
+tools/registry.json                                            — Machine-readable tool and workshop index (auto-generated, never hand-edit)
+workshops/README.md                                            — Workshop catalogue organized by difficulty
+schemas/tool.schema.json                                       — JSON Schema for tool.json manifests (Draft 2020-12)
+schemas/workshop.schema.json                                   — JSON Schema for workshop.json manifests (Draft 2020-12)
+scripts/rebuild-registry.sh                                    — Registry rebuild script (bash + jq)
+.github/workflows/validate.yml                                 — CI schema validation and registry consistency workflow

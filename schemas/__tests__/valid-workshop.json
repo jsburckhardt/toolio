@@ -1,0 +1,13 @@
+{
+  "$schema": "../../schemas/workshop.schema.json",
+  "name": "valid-example-workshop",
+  "displayName": "Valid Example Workshop",
+  "version": "1.0.0",
+  "description": "A valid workshop for testing schema validation",
+  "author": "test-author",
+  "license": "MIT",
+  "difficulty": "beginner",
+  "estimatedDuration": "30m",
+  "prerequisites": ["Basic knowledge"],
+  "objectives": ["Learn something useful"]
+}

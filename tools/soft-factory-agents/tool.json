@@ -1,0 +1,15 @@
+{
+  "$schema": "../../schemas/tool.schema.json",
+  "name": "soft-factory-agents",
+  "displayName": "Soft Factory Agents",
+  "version": "1.0.0",
+  "description": "Collection of AI agent instructions implementing the Soft Factory RPIV pipeline for automated software delivery",
+  "author": "jsburckhardt",
+  "license": "MIT",
+  "type": "agent-instruction",
+  "tags": ["agents", "pipeline", "rpiv", "soft-factory", "automation"],
+  "platforms": ["vscode-copilot", "claude-code"],
+  "entrypoint": "../../.github/agents/justdoit.agent.md",
+  "dependencies": [],
+  "minAgentVersion": null
+}
