@@ -47,7 +47,11 @@ jobs:
 
       - name: Check registry is up to date
         run: |
-          if ! git diff --exit-code tools/registry.json; then
+          # Compare ignoring the generatedAt timestamp (changes on every run)
+          jq 'del(.generatedAt)' tools/registry.json > /tmp/registry-new.json
+          git checkout HEAD -- tools/registry.json
+          jq 'del(.generatedAt)' tools/registry.json > /tmp/registry-committed.json
+          if ! diff -u /tmp/registry-committed.json /tmp/registry-new.json; then
             echo "ERROR: tools/registry.json is out of date. Run 'scripts/rebuild-registry.sh' and commit the result." >&2
             exit 1
           fi
