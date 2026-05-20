@@ -1,11 +1,16 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-20T02:40:22Z",
+  "generatedAt": "2026-05-20T05:14:55Z",
   "tools": [
     {
       "slug": "devcontainer-toolio",
       "path": "tools/devcontainer-toolio",
       "manifest": "tools/devcontainer-toolio/tool.json"
+    },
+    {
+      "slug": "pipeline-controller",
+      "path": "tools/pipeline-controller",
+      "manifest": "tools/pipeline-controller/tool.json"
     },
     {
       "slug": "soft-factory-agents",
