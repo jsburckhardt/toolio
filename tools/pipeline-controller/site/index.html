@@ -8,117 +8,113 @@
 </head>
 <body>
   <header class="header">
-    <h1>Pipeline Controller</h1>
-    <p class="issue-badge" id="issue-badge" aria-live="polite">Issue: loading...</p>
+    <h1>🔄 Pipeline Controller</h1>
+    <p class="issue-badge">Issue #<span id="issue-number">—</span></p>
+    <p class="sdk-badge">Powered by <code>@github/copilot-sdk</code></p>
   </header>
 
-  <main class="pipeline" role="region" aria-label="Pipeline stages">
-    <div class="pipeline-track">
+  <main class="pipeline">
+    <div class="stage-card" id="stage-research" data-stage="research" aria-label="Research stage">
+      <div class="stage-header">
+        <h2>Research</h2>
+        <button class="info-btn" aria-label="Info about Research stage" onclick="toggleInfo('research')">
+          <span class="info-icon">i</span>
+        </button>
+      </div>
+      <div class="status-badge" aria-live="polite">locked</div>
+      <div class="stage-actions">
+        <button class="play-btn" aria-label="Run Research stage" aria-disabled="true" disabled>
+          ▶ Start
+        </button>
+      </div>
+      <div class="info-panel" id="info-research" hidden>
+        <h3>Purpose</h3>
+        <p>Explore the problem space, classify scope, produce a research brief</p>
+        <h3>Input</h3>
+        <p>GitHub issue body and acceptance criteria, existing codebase and documentation</p>
+        <h3>Output</h3>
+        <p><code>project/issues/&lt;N&gt;/research/00-research.md</code></p>
+      </div>
+    </div>
 
-      <article id="stage-research" class="stage-card status-locked" aria-label="Research stage">
-        <div class="stage-header">
-          <h2 class="stage-name">Research</h2>
-          <span class="status-badge" aria-live="polite">locked</span>
-        </div>
-        <p class="stage-description">Explore the problem space, classify scope, produce a research brief.</p>
-        <div class="stage-actions">
-          <button class="btn-play" data-stage="research" aria-label="Start Research stage" disabled>&#9654; Start</button>
-          <button class="btn-complete" data-stage="research" aria-label="Complete Research stage" disabled>&#10003; Complete</button>
-          <button class="btn-info" data-stage="research" aria-label="Show Research info" aria-expanded="false">&#9432; Info</button>
-        </div>
-        <div class="stage-info" id="info-research" hidden>
-          <dl>
-            <dt>Purpose</dt>
-            <dd>Explore the problem space, classify scope, produce a research brief</dd>
-            <dt>Input</dt>
-            <dd>GitHub issue body + codebase</dd>
-            <dt>Output</dt>
-            <dd>project/issues/&lt;N&gt;/research/00-research.md</dd>
-          </dl>
-        </div>
-      </article>
+    <div class="connector" aria-hidden="true">→</div>
 
-      <div class="connector" aria-hidden="true"></div>
+    <div class="stage-card" id="stage-plan" data-stage="plan" aria-label="Plan stage">
+      <div class="stage-header">
+        <h2>Plan</h2>
+        <button class="info-btn" aria-label="Info about Plan stage" onclick="toggleInfo('plan')">
+          <span class="info-icon">i</span>
+        </button>
+      </div>
+      <div class="status-badge" aria-live="polite">locked</div>
+      <div class="stage-actions">
+        <button class="play-btn" aria-label="Run Plan stage" aria-disabled="true" disabled>
+          ▶ Start
+        </button>
+      </div>
+      <div class="info-panel" id="info-plan" hidden>
+        <h3>Purpose</h3>
+        <p>Commit architectural decisions via ADRs and core-components, then produce action plan, task breakdown, and test plan</p>
+        <h3>Input</h3>
+        <p>Research brief from previous stage</p>
+        <h3>Output</h3>
+        <p><code>ADRs + project/issues/&lt;N&gt;/plan/*.md</code></p>
+      </div>
+    </div>
 
-      <article id="stage-plan" class="stage-card status-locked" aria-label="Plan stage">
-        <div class="stage-header">
-          <h2 class="stage-name">Plan</h2>
-          <span class="status-badge" aria-live="polite">locked</span>
-        </div>
-        <p class="stage-description">Commit architectural decisions via ADRs, produce task breakdown and test plan.</p>
-        <div class="stage-actions">
-          <button class="btn-play" data-stage="plan" aria-label="Start Plan stage" disabled>&#9654; Start</button>
-          <button class="btn-complete" data-stage="plan" aria-label="Complete Plan stage" disabled>&#10003; Complete</button>
-          <button class="btn-info" data-stage="plan" aria-label="Show Plan info" aria-expanded="false">&#9432; Info</button>
-        </div>
-        <div class="stage-info" id="info-plan" hidden>
-          <dl>
-            <dt>Purpose</dt>
-            <dd>Commit architectural decisions via ADRs and core-components, then produce the action plan, task breakdown, and test plan</dd>
-            <dt>Input</dt>
-            <dd>Research brief</dd>
-            <dt>Output</dt>
-            <dd>ADRs + project/issues/&lt;N&gt;/plan/*.md</dd>
-          </dl>
-        </div>
-      </article>
+    <div class="connector" aria-hidden="true">→</div>
 
-      <div class="connector" aria-hidden="true"></div>
+    <div class="stage-card" id="stage-implement" data-stage="implement" aria-label="Implement stage">
+      <div class="stage-header">
+        <h2>Implement</h2>
+        <button class="info-btn" aria-label="Info about Implement stage" onclick="toggleInfo('implement')">
+          <span class="info-icon">i</span>
+        </button>
+      </div>
+      <div class="status-badge" aria-live="polite">locked</div>
+      <div class="stage-actions">
+        <button class="play-btn" aria-label="Run Implement stage" aria-disabled="true" disabled>
+          ▶ Start
+        </button>
+      </div>
+      <div class="info-panel" id="info-implement" hidden>
+        <h3>Purpose</h3>
+        <p>Execute tasks, write code and tests, verify against the plan</p>
+        <h3>Input</h3>
+        <p>Task breakdown and test plan from Plan stage</p>
+        <h3>Output</h3>
+        <p><code>Source code + test files</code></p>
+      </div>
+    </div>
 
-      <article id="stage-implement" class="stage-card status-locked" aria-label="Implement stage">
-        <div class="stage-header">
-          <h2 class="stage-name">Implement</h2>
-          <span class="status-badge" aria-live="polite">locked</span>
-        </div>
-        <p class="stage-description">Execute tasks, write code and tests, verify against the plan.</p>
-        <div class="stage-actions">
-          <button class="btn-play" data-stage="implement" aria-label="Start Implement stage" disabled>&#9654; Start</button>
-          <button class="btn-complete" data-stage="implement" aria-label="Complete Implement stage" disabled>&#10003; Complete</button>
-          <button class="btn-info" data-stage="implement" aria-label="Show Implement info" aria-expanded="false">&#9432; Info</button>
-        </div>
-        <div class="stage-info" id="info-implement" hidden>
-          <dl>
-            <dt>Purpose</dt>
-            <dd>Execute tasks, write code and tests, verify against the plan</dd>
-            <dt>Input</dt>
-            <dd>Task breakdown + test plan</dd>
-            <dt>Output</dt>
-            <dd>Source code + tests</dd>
-          </dl>
-        </div>
-      </article>
+    <div class="connector" aria-hidden="true">→</div>
 
-      <div class="connector" aria-hidden="true"></div>
-
-      <article id="stage-verify" class="stage-card status-locked" aria-label="Verify stage">
-        <div class="stage-header">
-          <h2 class="stage-name">Verify</h2>
-          <span class="status-badge" aria-live="polite">locked</span>
-        </div>
-        <p class="stage-description">Run tests, commit, push, and open a pull request for review.</p>
-        <div class="stage-actions">
-          <button class="btn-play" data-stage="verify" aria-label="Start Verify stage" disabled>&#9654; Start</button>
-          <button class="btn-complete" data-stage="verify" aria-label="Complete Verify stage" disabled>&#10003; Complete</button>
-          <button class="btn-info" data-stage="verify" aria-label="Show Verify info" aria-expanded="false">&#9432; Info</button>
-        </div>
-        <div class="stage-info" id="info-verify" hidden>
-          <dl>
-            <dt>Purpose</dt>
-            <dd>Run tests, commit, push, and open a pull request for review</dd>
-            <dt>Input</dt>
-            <dd>Implementation + test results</dd>
-            <dt>Output</dt>
-            <dd>Pull request URL</dd>
-          </dl>
-        </div>
-      </article>
-
+    <div class="stage-card" id="stage-verify" data-stage="verify" aria-label="Verify stage">
+      <div class="stage-header">
+        <h2>Verify</h2>
+        <button class="info-btn" aria-label="Info about Verify stage" onclick="toggleInfo('verify')">
+          <span class="info-icon">i</span>
+        </button>
+      </div>
+      <div class="status-badge" aria-live="polite">locked</div>
+      <div class="stage-actions">
+        <button class="play-btn" aria-label="Run Verify stage" aria-disabled="true" disabled>
+          ▶ Start
+        </button>
+      </div>
+      <div class="info-panel" id="info-verify" hidden>
+        <h3>Purpose</h3>
+        <p>Run tests, commit, push, and open a pull request for review</p>
+        <h3>Input</h3>
+        <p>Completed implementation and test results</p>
+        <h3>Output</h3>
+        <p><code>Pull request URL</code></p>
+      </div>
     </div>
   </main>
 
   <footer class="footer">
-    <p class="error-message" id="error-message" role="alert" hidden></p>
-    <p class="status-line" id="status-line">Connecting...</p>
+    <p>Pipeline state: <code>.pipeline-state.json</code> • Polling every 2s</p>
   </footer>
 
   <script src="assets/app.js"></script>

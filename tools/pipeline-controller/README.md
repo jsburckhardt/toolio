@@ -1,53 +1,87 @@
-# Pipeline Controller
+# Pipeline Controller — Copilot Extension
 
-Visual orchestration UI for the RPIV pipeline — launch, monitor, and control Research/Plan/Implement/Verify stages.
+A **Copilot Extension** using `@github/copilot-sdk` that provides a visual orchestration UI for the RPIV pipeline. It registers custom tools with the Copilot SDK session and serves a web-based pipeline dashboard.
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  @github/copilot-sdk (CopilotClient + JSON-RPC)             │
+│  ├── Custom Tools: get_pipeline_state, run_stage,           │
+│  │                 complete_stage, get_stage_info            │
+│  └── Session: model=gpt-4.1, streaming=true                 │
+├─────────────────────────────────────────────────────────────┤
+│  HTTP Server (localhost)                                     │
+│  ├── GET  /api/state          → pipeline state JSON         │
+│  ├── POST /api/stage/:id/start → start a stage              │
+│  ├── POST /api/stage/:id/complete → complete a stage        │
+│  ├── POST /api/stage/:id/retry → retry a failed stage       │
+│  └── Static files from site/                                │
+├─────────────────────────────────────────────────────────────┤
+│  Web UI (site/)                                              │
+│  ├── 4 stage cards with status indicators                   │
+│  ├── Play/retry buttons + info panels                       │
+│  └── 2-second polling for state updates                     │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ## Prerequisites
 
-- `bash` (4.x+)
-- `jq` (JSON processing)
-- `python3` (HTTP server)
-- `gh` (GitHub CLI, authenticated)
-- A valid GitHub issue number
+- Node.js 20+
+- GitHub CLI (`gh`) authenticated
+- GitHub Copilot CLI installed
 
 ## Usage
 
 ```bash
-# Launch with default port (8080)
-tools/pipeline-controller/bin/pipeline-controller <issue_number>
+# Launch for a specific issue
+npx tsx tools/pipeline-controller/src/index.ts <issue_number>
 
-# Launch with custom port
-tools/pipeline-controller/bin/pipeline-controller <issue_number> --port 9090
+# With custom port
+npx tsx tools/pipeline-controller/src/index.ts <issue_number> --port 9090
 
-# Show help
-tools/pipeline-controller/bin/pipeline-controller --help
+# Using npm script (from tool directory)
+cd tools/pipeline-controller
+npm start -- 6
 ```
 
-## How It Works
+## What Happens
 
-1. Validates prerequisites (gh auth, jq, python3)
-2. Validates the GitHub issue exists
-3. Creates `.pipeline-state.json` in the repository root
-4. Starts an HTTP server serving the visual UI
-5. Opens your browser to the pipeline dashboard
+1. Validates `gh` auth and issue existence
+2. Creates `.pipeline-state.json` in repo root
+3. Starts HTTP server with API + static UI
+4. Creates a **Copilot SDK session** with 4 custom tools registered
+5. Opens pipeline dashboard in browser
+
+## Copilot SDK Integration
+
+The extension registers these custom tools with the SDK session:
+
+| Tool | Description |
+|------|-------------|
+| `get_pipeline_state` | Returns current state of all 4 stages |
+| `run_stage` | Starts a stage (must be in 'ready' status) |
+| `complete_stage` | Marks a running stage as done, unlocks next |
+| `get_stage_info` | Returns purpose, inputs, outputs for a stage |
+
+If the Copilot CLI is not available, the web UI still works independently via the HTTP API.
 
 ## Pipeline Stages
 
 | Stage | Purpose |
 |-------|---------|
 | Research | Explore the problem space, classify scope, produce a research brief |
-| Plan | Commit architectural decisions via ADRs, produce task breakdown and test plan |
-| Implement | Execute tasks, write code and tests, verify against the plan |
-| Verify | Run tests, commit, push, and open a pull request for review |
+| Plan | Commit architectural decisions, produce task breakdown and test plan |
+| Implement | Execute tasks, write code and tests |
+| Verify | Run tests, commit, push, open PR |
 
-## State File
+## State Machine
 
-The controller writes `.pipeline-state.json` to the repository root (working directory).
-This file is **not** committed to version control — add it to `.gitignore`.
+```
+locked → ready → running → done
+                    ↓
+                  failed → ready (retry)
+```
 
-## Architecture
+When stage N completes (`done`), stage N+1 automatically transitions from `locked` to `ready`.
 
-- `bin/pipeline-controller` — POSIX bash entrypoint
-- `lib/state.sh` — State management helpers (read/write `.pipeline-state.json`)
-- `lib/server.py` — Custom Python HTTP server (serves UI + state API)
-- `site/` — Static web UI assets (HTML, CSS, JS)
