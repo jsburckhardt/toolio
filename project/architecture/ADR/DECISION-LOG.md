@@ -9,6 +9,7 @@ This file is the single registry of all architectural decisions and core-compone
 | ADR-0002 | Repository Layout Standard | Accepted | 2025-06-20 |
 | ADR-0003 | Tool and Workshop Packaging Convention | Accepted | 2025-06-20 |
 | ADR-0004 | Extension-Driven Workshop Layout Standard | Accepted | 2026-05-19 |
+| ADR-0005 | Extension-Type Tool Internal Layout Standard | Accepted | 2025-06-21 |
 
 ## Core-Components
 
@@ -46,3 +47,10 @@ Short, actionable statements derived from ADRs and core-components. More than on
 | 22 | Require `workshops/README.md` to document both Layout A and Layout B side-by-side | ADR-0004 | 2026-05-19 |
 | 23 | Defer ADR-0005 (Copilot CLI plugin install convention) until `copilot /plugin install` introduces a repo-root path | ADR-0004 | 2026-05-19 |
 | 24 | Defer CORE-COMPONENT-0003 (Workshop Harness Pattern) until a second harness workshop is proposed | ADR-0004 | 2026-05-19 |
+| 25 | Require extension-type tools to place a POSIX bash entrypoint at `bin/<slug>` with chmod +x | ADR-0005 | 2025-06-21 |
+| 26 | Require `entrypoint` in tool.json for extension tools to be `bin/<slug>` | ADR-0005 | 2025-06-21 |
+| 27 | Prohibit extension tools from writing outside `tools/<slug>/` at install time | ADR-0005 | 2025-06-21 |
+| 28 | Write runtime state files to the invoking working directory, not inside the tool directory | ADR-0005 | 2025-06-21 |
+| 29 | Use `site/` as the standard directory name for static web UI assets in extension tools | ADR-0005 | 2025-06-21 |
+| 30 | Serve static web UI via `python3 -m http.server` bound to localhost | ADR-0005 | 2025-06-21 |
+| 31 | Treat SDK integration as optional layer on top of bash entrypoint — never a replacement | ADR-0005 | 2025-06-21 |
