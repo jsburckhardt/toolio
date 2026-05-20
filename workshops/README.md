@@ -73,4 +73,4 @@ workshop. Pick the layout that matches your workshop's runtime character.
 
 | Workshop | Description | Duration |
 |----------|-------------|----------|
-| [sdd-evolution-harness-engineering](./sdd-evolution-harness-engineering/) | Interactive harness workshop: RPIV pipeline, sensors, drift detection, brownfield onboarding (Layout B; bash entrypoint canonical, SDK adapter stub) | 3h15m |
+| [sdd-evolution-harness-engineering](./sdd-evolution-harness-engineering/) | Static-website pair workshop walking the SDD-evolution arc: hashtag prompts → RPIV → shared architecture → brownfield onboarding → harness 2×2 → parallel agents. Open `site/index.html`. | 3h15m (90 min condensed) |
