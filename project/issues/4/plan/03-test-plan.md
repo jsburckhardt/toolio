@@ -1,3 +1,23 @@
+> ⚠️  **PIVOT NOTE — 2026-05-20**
+>
+> The deliverable in this PR was originally framed as an installable Copilot CLI
+> extension built with `@github/copilot-sdk`, with a POSIX-bash offline
+> entrypoint as the canonical implementation. After implementation and review,
+> user feedback established that the artifact was a *tool*, not a *workshop* —
+> it taught nothing.
+>
+> The final deliverable is a **self-contained static website** under
+> `workshops/sdd-evolution-harness-engineering/site/`. Nine module pages cover
+> the same SDD-evolution arc with concept narrative, exercises,
+> expected-output callouts, and debrief questions.
+>
+> The document below is preserved as the historical record of how the decision
+> was reached. The *content* (RPIV, ADRs, brownfield, 2×2, parallel agents) is
+> unchanged; only the *delivery format* changed. For the current state, see
+> `workshops/sdd-evolution-harness-engineering/site/index.html`.
+
+---
+
 # Test Plan — Issue #4
 
 This plan enumerates every test that satisfies the issue's Testing acceptance criteria

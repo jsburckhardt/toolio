@@ -1,6 +1,79 @@
 # Implementation Notes — Issue #4
 
-## T00 verification (live, devcontainer)
+## Final deliverable
+
+A self-contained static website under `workshops/sdd-evolution-harness-engineering/site/`.
+Zero build step, zero runtime dependencies. Nine module pages walk the SDD-evolution arc
+with concept narrative, numbered exercises, expected-output callouts, debrief questions,
+and takeaway summaries.
+
+### Files shipped (final)
+
+```
+workshops/sdd-evolution-harness-engineering/
+├── workshop.json          (manifest; consumed by tools/registry.json)
+├── README.md              (how to open the site; three methods)
+└── site/
+    ├── index.html         (landing + arc diagram + module grid)
+    ├── assets/
+    │   ├── styles.css     (dark theme, accessible, responsive)
+    │   └── app.js         (copy buttons, sidebar active-link highlight)
+    └── modules/
+        ├── 00-baseline.html
+        ├── 01-plan-implement.html
+        ├── 02-rpiv.html
+        ├── 03-shared-architecture.html
+        ├── 04-brownfield-onboarding.html
+        ├── 05-wrap-dont-fork.html
+        ├── 06-harness-engineering.html
+        ├── 07-parallel-agents.html
+        └── 08-closing-kata.html
+```
+
+### How to run
+
+```bash
+# Option A — open directly
+open workshops/sdd-evolution-harness-engineering/site/index.html
+
+# Option B — serve locally (recommended in Codespaces / VS Code)
+python3 -m http.server 8000 \
+  --directory workshops/sdd-evolution-harness-engineering/site
+# then open http://127.0.0.1:8000/
+
+# Option C — host anywhere static
+# Drop site/ on GitHub Pages, Netlify, S3, nginx — anywhere that serves files.
+```
+
+### Verification (current)
+
+| Check | Command | Result |
+|-------|---------|--------|
+| Workshop schema | `check-jsonschema --schemafile schemas/workshop.schema.json workshops/*/workshop.json` | ✅ ok -- validation done |
+| Tool schema | `check-jsonschema --schemafile schemas/tool.schema.json tools/*/tool.json` | ✅ ok -- validation done |
+| Registry derivation | `bash scripts/rebuild-registry.sh && diff <(jq 'del(.generatedAt)' tools/registry.json) <(git show HEAD:tools/registry.json | jq 'del(.generatedAt)')` | ✅ empty diff |
+| HTTP smoke (`/`, `/modules/06-harness-engineering.html`, `/assets/styles.css`) | `curl -o /dev/null -w '%{http_code}'` after `python3 -m http.server` | ✅ 200 / 200 / 200 |
+| CI workflow | `.github/workflows/validate.yml` on the PR branch | ✅ success |
+
+### Commits that produced the final deliverable
+
+| SHA | Title |
+|-----|-------|
+| `313585d` | feat(workshop): add interactive workshop website |
+| `5a5d6f0` | refactor(workshop): replace bash CLI harness with static website |
+| `227f488` | docs(catalogue): point Advanced row at the website-based workshop |
+| `a07303a` | chore(registry): regenerate tools/registry.json after workshop refactor |
+
+---
+
+## Historical record — the CLI implementation (superseded)
+
+> The content below describes the original CLI implementation in commits
+> `9fd27ce`..`fecde61` of this PR. It is preserved for traceability: future
+> readers can see what was tried, what was learned, and why we pivoted. **None
+> of these files exist in the working tree anymore.**
+
+### T00 verification (live, devcontainer)
 
 ```
 === copilot --help ===
@@ -8,12 +81,6 @@ Usage: copilot [options] [command]
 GitHub Copilot CLI - An AI-powered coding assistant.
 … (no `plugin` subcommand visible at the CLI surface; /plugin and /experimental
    are interactive REPL slash-commands only)
-
-=== copilot /plugin --help ===
-(no separate subcommand — same usage banner as `copilot --help`)
-
-=== copilot /experimental --help ===
-(no separate subcommand — same usage banner as `copilot --help`)
 
 === which ===
 /usr/local/bin/copilot
@@ -29,220 +96,68 @@ v24.15.0
 1.0.0-beta.4
 ```
 
-**Decision-tree outcome:** `copilot /plugin install` does **not** exist as a CLI
-subcommand. Per the action plan's binding decision tree, the **bash entrypoint
-at `extension/bin/workshop` IS the canonical implementation**, and the SDK
-adapter under `extension/commands/` is a documented future-work stub. ADR-0005
-is not opened. The workshop README and `scaffold-with-copilot-sdk.md` both
-state this prominently.
+**Decision-tree outcome (at the time):** `copilot /plugin install` does not exist
+as a CLI subcommand. Per the action plan's binding decision tree, the bash
+entrypoint at `extension/bin/workshop` was adopted as the canonical
+implementation, and the SDK adapter under `extension/commands/` was a documented
+future-work stub. ADR-0005 was not opened.
 
-Tooling versions captured for the SDK doc:
-- `@github/copilot-sdk@1.0.0-beta.4` (pinned in `extension/manifest.json` and `scaffold-with-copilot-sdk.md`)
-- Node.js `v24.15.0` (pinned in `scaffold-with-copilot-sdk.md`)
+### Files created (now deleted)
 
-## Files created (grouped by task)
-
-### T01 — manifest + skeleton + LLM.txt
-- `workshops/sdd-evolution-harness-engineering/workshop.json`
-- `LLM.txt` (one line appended)
-
-### T02 / T03 / T04 / T05 — bash entrypoint + state + locking + drift + hooks
-- `workshops/sdd-evolution-harness-engineering/extension/bin/workshop` (dispatcher, ~280 LOC)
-- `workshops/sdd-evolution-harness-engineering/extension/lib/state.sh` (state file mgmt, jq-only)
-- `workshops/sdd-evolution-harness-engineering/extension/lib/lock.sh` (`flock` per-git-common-dir)
-- `workshops/sdd-evolution-harness-engineering/extension/lib/drift.sh` (six triggers)
-- `workshops/sdd-evolution-harness-engineering/extension/lib/hooks.sh` (chain + backup + restore)
-- `workshops/sdd-evolution-harness-engineering/extension/hooks/pre-commit-research-gate`
-- `workshops/sdd-evolution-harness-engineering/extension/hooks/pre-commit-plan-gate`
-- `workshops/sdd-evolution-harness-engineering/extension/hooks/pre-pr-verify-gate`
-
-### T06 — modules
-- `modules/00-baseline.md` … `modules/08-closing-kata.md` (9 files, each ≤ 80 lines)
-
-### T07 — scaffolders + draft-acceptance flow
-- `workshops/sdd-evolution-harness-engineering/extension/lib/scaffold.sh`
-
-### T08 — inferential coaches
-- `workshops/sdd-evolution-harness-engineering/extension/lib/coach.sh`
-- `workshops/sdd-evolution-harness-engineering/extension/lib/prompts/post-research-coach.prompt.md`
-- `workshops/sdd-evolution-harness-engineering/extension/lib/prompts/post-plan-2x2-sensor.prompt.md`
-
-### T09 — 2×2 inspector
-- `workshops/sdd-evolution-harness-engineering/extension/lib/diagnose.sh`
-
-### T10 — brownfield onboarding + fixture
-- `workshops/sdd-evolution-harness-engineering/extension/lib/onboard.sh`
-- `workshops/sdd-evolution-harness-engineering/test-fixtures/brownfield/` (README, package.json, Dockerfile, .github/workflows/ci.yml, src/, tests/, docs/, .gitignore)
-
-### T11 — stretch (`install-promote-ephemeral`, `fan-out`)
-- Implemented inside `scaffold.sh` (`scaffold_promote_ephemeral`, `fan_out_run`)
-
-### T12 — SDK adapter + manifest + scaffold-with-copilot-sdk
+- `workshops/sdd-evolution-harness-engineering/workshop.json` (rewritten, not deleted)
+- `workshops/sdd-evolution-harness-engineering/README.md` (rewritten, not deleted)
+- `workshops/sdd-evolution-harness-engineering/extension/bin/workshop` (~280 LOC)
+- `workshops/sdd-evolution-harness-engineering/extension/lib/{state,lock,drift,hooks,scaffold,onboard,diagnose,coach}.sh`
+- `workshops/sdd-evolution-harness-engineering/extension/hooks/{pre-commit-research-gate,pre-commit-plan-gate,pre-pr-verify-gate}`
+- `workshops/sdd-evolution-harness-engineering/extension/commands/{index,coach,scaffold}.ts` (SDK adapter stubs)
 - `workshops/sdd-evolution-harness-engineering/extension/manifest.json`
-- `workshops/sdd-evolution-harness-engineering/extension/commands/index.ts`
-- `workshops/sdd-evolution-harness-engineering/extension/commands/coach.ts`
-- `workshops/sdd-evolution-harness-engineering/extension/commands/scaffold.ts`
+- `workshops/sdd-evolution-harness-engineering/modules/00-baseline.md` … `08-closing-kata.md` (9 sparse action sheets)
 - `workshops/sdd-evolution-harness-engineering/scaffold-with-copilot-sdk.md`
+- `workshops/sdd-evolution-harness-engineering/test-fixtures/brownfield/{README.md,Dockerfile,package.json,.gitignore,src/app.py,tests/test_app.py,docs/architecture.md,.github/workflows/ci.yml}`
+- `workshops/sdd-evolution-harness-engineering/test-fixtures/{run-tests.sh,MANUAL-VERIFICATION.md}`
+- `LLM.txt` (one line for the workshop — retained, points at the same path)
 
-### T13 — README
-- `workshops/sdd-evolution-harness-engineering/README.md` (with 90-minute condensed agenda, attribution, MIT)
-
-### T14 — catalogue
-- `workshops/README.md` (rewritten to document Layout A + Layout B and add the Advanced row)
-
-### T15 — registry regenerated via script
-- `tools/registry.json` (regenerated by `scripts/rebuild-registry.sh`; not hand-edited)
-
-### T16 — test suite + manual procedures
-- `workshops/sdd-evolution-harness-engineering/test-fixtures/run-tests.sh` (68 automated tests)
-- `workshops/sdd-evolution-harness-engineering/test-fixtures/MANUAL-VERIFICATION.md` (3 manual procedures)
-
-## Test results
+### Test results (at the time)
 
 Command: `bash workshops/sdd-evolution-harness-engineering/test-fixtures/run-tests.sh`
 
 **Summary: PASS=68  FAIL=0**
 
-Per-test PASS list (all 68 IDs from `03-test-plan.md`):
+68 automated tests passed across schema validation, layout, dispatch,
+state-machine drift detection (all six triggers), hook chaining (Husky,
+pre-commit.com, raw), sensor pass/fail, draft acceptance, coach degraded-mode,
+2×2 inspector, brownfield onboarding security (symlink escape, traversal,
+size/depth limits, secret redaction), promote-ephemeral, fan-out, SDK-extension
+hygiene, and offline-mode integration.
 
-```
-PASS  T-SCHEMA-01
-PASS  T-LAYOUT-01
-PASS  T-LLMTXT-01
-PASS  T-DISPATCH-01
-PASS  T-DISPATCH-02
-PASS  T-NOCOLOR-01
-PASS  T-OFFLINE-BANNER-01
-PASS  T-FLOCK-MISSING-01
-PASS  T-JSON-01-04
-PASS  T-STATE-01
-PASS  T-STATE-GITIGNORE-01
-PASS  T-NO-FILE-CONTENTS-01
-PASS  T-DRIFT-RESET-01
-PASS  T-DRIFT-CHECKOUT-01
-PASS  T-DRIFT-REBASE-01
-PASS  T-DRIFT-WORKTREE-ADD-01
-PASS  T-DRIFT-WORKTREE-REMOVE-01
-PASS  T-DRIFT-PR-MERGE-01
-PASS  T-CONCURRENCY-01
-PASS  T-HOOK-CHAIN-HUSKY-01
-PASS  T-HOOK-CHAIN-PRECOMMIT-01
-PASS  T-HOOK-CHAIN-RAW-01
-PASS  T-HOOK-IDENT-01
-PASS  T-RESET-IDEMPOTENT-01
-PASS  T-OVERRIDE-LEDGER-01
-PASS  T-NO-VERIFY-01
-PASS  T-UNINSTALL-HYGIENE-01
-PASS  T-SENSOR-RESEARCH-PASS-01
-PASS  T-SENSOR-RESEARCH-FAIL-01
-PASS  T-SENSOR-PLAN-PASS-01
-PASS  T-SENSOR-PLAN-FAIL-01
-PASS  T-SENSOR-VERIFY-PASS-01
-PASS  T-SENSOR-VERIFY-FAIL-01
-PASS  T-MODULES-COUNT-01
-PASS  T-MODULES-SIZE-01
-PASS  T-MODULES-LINK-01
-PASS  T-SCAFFOLD-ADR-01
-PASS  T-ACCEPT-DRAFT-01
-PASS  T-REJECT-DRAFT-01
-PASS  T-NO-AUTO-COMMIT-01
-PASS  T-COACH-DISPATCH-01
-PASS  T-COACH-CATEGORY-01
-PASS  T-COACH-CATEGORY-02
-PASS  T-COACH-KATA-VERBATIM-01
-PASS  T-DIAGNOSE-EMPTY-01
-PASS  T-DIAGNOSE-POPULATED-01
-PASS  T-NEXT-GATE-01
-PASS  T-ONBOARD-BROWNFIELD-01
-PASS  T-ONBOARD-SYMLINK-01
-PASS  T-ONBOARD-TRAVERSAL-01
-PASS  T-ONBOARD-SIZE-LIMIT-01
-PASS  T-ONBOARD-DEPTH-LIMIT-01
-PASS  T-ONBOARD-REDACTION-01
-PASS  T-ONBOARD-CONFIRM-01
-PASS  T-PROMOTE-01
-PASS  T-FAN-OUT-01
-PASS  T-STRETCH-INDEPENDENT-01
-PASS  T-MANIFEST-PERMISSION-01
-PASS  T-SIDE-BY-SIDE-01
-PASS  T-SDK-DELEGATE-01
-PASS  T-VERSION-PINNED-01
-PASS  T-AGENDA-01
-PASS  T-AGENDA-COMMANDS-01
-PASS  T-CATALOGUE-LAYOUTS-01
-PASS  T-CATALOGUE-ROW-01
-PASS  T-REGISTRY-DERIVED-01
-PASS  T-CI-VALIDATE-01
-PASS  T-OFFLINE-INTEGRATION-01
-```
+### Why the pivot happened
 
-(The 51 automated tests from the test plan are all covered; the test count of
-68 reflects that several "T-… {A,B,C}" composite IDs in the plan are exposed
-here as individual cases, e.g., T-DRIFT-* expands into six concrete tests, one
-per trigger. All 51 plan IDs are addressed; nothing was skipped.)
+The CLI passed every test the plan asked for. The user opened it, ran
+`workshop start`, `install-hooks`, `status`, `run 00-baseline` — and asked
+*"where is the workshop or what i can see"*. The honest answer was: nowhere
+visible. The CLI was a tool. The "modules" were 15-line bullet lists. There
+was no narrative, no teaching content, no UI.
 
-Manual procedures (3) are documented in
-`workshops/sdd-evolution-harness-engineering/test-fixtures/MANUAL-VERIFICATION.md`
-with structured outcome blocks for facilitator + trainee + LLM-meta.
+The website was built from the verbatim source narrative (Appendix A of the
+issue body) into nine proper lesson pages and shipped in commits
+`313585d`..`a07303a` (see the table above).
 
-## CI parity checks (run locally)
+### Lessons for the next pipeline run
 
-```
-$ check-jsonschema --schemafile schemas/workshop.schema.json workshops/*/workshop.json
-ok -- validation done
-
-$ check-jsonschema --schemafile schemas/tool.schema.json tools/*/tool.json
-ok -- validation done
-
-$ bash scripts/rebuild-registry.sh   # idempotent except for generatedAt
-Registry generated at /workspaces/toolio/tools/registry.json with 2 tool(s) and 2 workshop(s).
-```
-
-## Deviations from the plan (justified, none architectural)
-
-1. **Hook self-identification line order.** The test plan's `T-HOOK-IDENT-01`
-   says `head -n1` matches the marker. To satisfy that **and** keep hooks
-   executable, line 1 is the marker comment and line 2 is `#!/usr/bin/env
-   bash`. Linux's loader returns ENOEXEC for such files; git falls back to
-   running them via `sh`. Verified by `T-HOOK-CHAIN-{HUSKY,PRECOMMIT,RAW}-01`
-   which exercise the wrapper end-to-end.
-
-2. **`T-FLOCK-MISSING-01` uses an env backdoor.** A clean PATH-shadow cannot
-   suppress `command -v flock` without also breaking `bash`/`jq`/`git`. The
-   bash entrypoint accepts `WORKSHOP_TEST_NO_FLOCK=1` to short-circuit the
-   capability check in tests. This is the smallest test backdoor that still
-   exercises the error path verbatim.
-
-3. **Test count.** The test plan lists 51 automated IDs plus 3 manual; some
-   plan IDs expand into multiple concrete tests (e.g., T-DRIFT-* is six tests,
-   one per trigger). The full automated suite is 68 cases. None of the plan's
-   IDs are skipped.
-
-4. **Stretch modules co-located with scaffolders.** `install-promote-ephemeral`
-   and `fan-out` were implemented as functions in `scaffold.sh` rather than as
-   a separate stretch lib, because they share helpers. T11 ACs are satisfied
-   by the same code path.
-
-## Open issues for the Verifier
-
-- **SDK adapter is a stub** (per T00 decision-tree outcome). When the
-  `@github/copilot-sdk` exposes a stable command-registration API,
-  `extension/commands/*.ts` will be fleshed out. Documented in
-  `scaffold-with-copilot-sdk.md`.
-
-- **`copilot /plugin install` integration deferred.** The bash entrypoint is
-  canonical; no repo-root install convention is introduced. If a future
-  Copilot CLI release exposes such a mechanism, ADR-0005 must be opened (per
-  ADR-0004 §Disposition).
-
-- **bats not used.** Plan §T16 says "bats/equivalent"; we used a pure-bash
-  test runner (`run-tests.sh`) because bats had to be installed via apt at
-  implementation time and the equivalent runner keeps the suite a single
-  self-contained script invocable from CI without extra setup. Output format
-  is `PASS  <id>` / `FAIL  <id>` per line, easily greppable in CI.
-
-## Conventional Commits note
-
-Commits are not yet created in this stage; the working tree is left dirty for
-the Verifier stage per the implementer agent's working approach. Suggested
-commit grouping (one per task) is preserved by the file boundaries above.
+1. **&ldquo;Action-first&rdquo; ≠ &ldquo;no teaching content&rdquo;.** A workshop module file with only bullet-list
+   commands and three debrief questions is not a workshop; it is a runbook. The
+   plan stage and the verifier should explicitly check for narrative content
+   (e.g., minimum word count per module, or presence of concept-explanation
+   sections), not just structural conformance.
+2. **Have a human eyeball the artifact before declaring done.** All 68 tests
+   passed and the artifact was still useless. Computational sensors caught
+   nothing because nothing they tested was wrong; the *thing being tested* was
+   wrong.
+3. **&ldquo;Interactive&rdquo; in the issue title was the trap.** The implementer read
+   &ldquo;interactive&rdquo; as &ldquo;CLI commands the trainee runs&rdquo;. The user meant
+   &ldquo;something a person can navigate and see and follow&rdquo;. Future issue
+   generators should disambiguate &mdash; e.g., explicitly list deliverable
+   format (website? CLI? notebook? slides?) as an acceptance criterion.
+4. **Static sites are an underused workshop delivery mechanism.** ADR-0004
+   permits only `steps/` and `extension/+modules/` layouts. A future ADR
+   should formalise `site/` as a third permitted layout.
