@@ -1,27 +1,27 @@
 {
   "$schema": "../../schemas/workshop.schema.json",
   "name": "sdd-evolution-harness-engineering",
-  "displayName": "SDD-Evolution Harness Engineering",
+  "displayName": "SDD Evolution — From `# write a function` to Harness Engineering",
   "version": "1.0.0",
-  "description": "Interactive, harness-driven workshop that teaches Spec-Driven Development evolution: build computational guides and sensors, the four-stage RPIV pipeline (Research, Plan, Implement, Verify), drift detection, draft-acceptance scaffolders, and brownfield onboarding via a Copilot CLI extension with a POSIX-bash offline fallback.",
+  "description": "Hands-on, lego-style workshop on the one-year arc of agentic coding: from hashtag prompts through the four-stage RPIV pipeline (Research, Plan, Implement, Verify) into shared architecture, brownfield onboarding, wrapping upstream agents, the harness 2×2 (guides × sensors / computational × inferential), and parallel agents. Delivered as a self-contained static website.",
   "author": "jsburckhardt",
   "license": "MIT",
   "difficulty": "advanced",
   "estimatedDuration": "3h15m",
   "prerequisites": [
-    "Comfort with git plumbing (worktrees, hooks, rebase, reset)",
-    "POSIX shell familiarity",
-    "Read AGENTS.md and at least one ADR in this repository",
-    "Devcontainer with flock, jq, node, and check-jsonschema"
+    "A coding-agent CLI you are comfortable with (Claude Code, OpenCode, Copilot CLI, or similar)",
+    "git, gh, and a Python or Node toolchain installed",
+    "A GitHub account with `gh auth login` working",
+    "A modern web browser (the workshop is a static HTML site under site/)"
   ],
   "objectives": [
-    "Drive Research, Plan, Implement, and Verify stages from a single command surface",
-    "Install computational sensors that gate commits on RPIV invariants",
-    "Detect harness drift across the six git triggers and reconcile state",
-    "Scaffold ADRs and core-components as draft candidates that never auto-mutate canonical files",
-    "Inspect a repository through the 2×2 (computational/inferential × guides/sensors) lens",
-    "Onboard a brownfield project safely with symlink-escape refusal and secret redaction",
-    "Operate fully offline through the bash entrypoint when the Copilot SDK is unavailable"
+    "Articulate what each RPIV stage produces and consumes without a cheat sheet",
+    "Promote a workitem decision into a shared ADR and have Research read it back automatically",
+    "Stand up RPIV on a brownfield repo by inferring implicit ADRs from existing code",
+    "Wrap an upstream coding agent without forking it by declaring artifact-path contracts",
+    "Distinguish guides (feedforward) from sensors (feedback), and computational from inferential mechanisms",
+    "Decompose a feature into parallel workitems that respect shared architecture and rendezvous points"
   ],
-  "tags": ["sdd", "harness", "rpiv", "advanced", "extension", "copilot-sdk", "interactive"]
+  "tags": ["sdd", "rpiv", "harness-engineering", "agents", "brownfield", "advanced", "website", "pair-workshop"]
 }
+

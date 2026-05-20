@@ -1,119 +1,98 @@
-# SDD-Evolution Harness Engineering Workshop
+# SDD Evolution — From `# write a function` to Harness Engineering
 
-> **Difficulty:** advanced · **Duration:** 3h15m (90-minute condensed agenda available) · **License:** MIT · **Author:** [@jsburckhardt](https://github.com/jsburckhardt)
+A hands-on, lego-style pair workshop on how agentic coding actually evolves
+under load — from hashtag prompts to a full RPIV harness with guides and
+sensors.
 
-An interactive, harness-driven workshop that teaches **Spec-Driven Development
-evolution**: build computational guides and sensors, drive the four-stage
-**RPIV** pipeline (Research, Plan, Implement, Verify), detect drift across the
-six git triggers, scaffold ADRs and core-components as **draft candidates**
-that never auto-mutate canonical files, and safely onboard a brownfield repo.
+- **Difficulty:** advanced
+- **Duration:** ~3 hours full · 90 min condensed
+- **Format:** pairs (driver + navigator, swap every module)
+- **Author:** [@jsburckhardt](https://github.com/jsburckhardt)
+- **License:** MIT
 
-This workshop is packaged as a **Copilot CLI extension** with an offline POSIX
-bash entrypoint that IS the canonical implementation. The SDK adapter layers on
-top; nothing breaks without the SDK.
+## How to open the workshop
 
-## SDK availability callout
+The workshop is a **self-contained static website** under [`site/`](./site/).
+Zero build step, zero dependencies — just open it.
 
-At implementation time, the public `copilot` CLI (`/usr/local/bin/copilot`)
-**did not expose** a `copilot /plugin install` subcommand. The `/plugin` and
-`/experimental` slash-commands are interactive REPL features only. Therefore:
+### Option 1 — Open `site/index.html` directly
 
-- **Run the workshop via the bash entrypoint** below — it is canonical.
-- The TypeScript SDK adapter under `extension/commands/` is a documented
-  future-work stub that compiles and delegates to bash. See
-  [`scaffold-with-copilot-sdk.md`](./scaffold-with-copilot-sdk.md) for details.
-
-## Quickstart
+Double-click `site/index.html` in your file manager, or:
 
 ```bash
-# 1. From any git repository's root (your own, or a clone of toolio):
-WORKSHOP=workshops/sdd-evolution-harness-engineering/extension/bin/workshop
+# macOS
+open workshops/sdd-evolution-harness-engineering/site/index.html
 
-# 2. Start:
-$WORKSHOP start
-$WORKSHOP install-hooks
-$WORKSHOP status
+# Linux
+xdg-open workshops/sdd-evolution-harness-engineering/site/index.html
 
-# 3. Walk modules:
-$WORKSHOP run 00-baseline
-$WORKSHOP next
-
-# 4. Tear down at any time (idempotent):
-$WORKSHOP reset
+# Windows
+start workshops\sdd-evolution-harness-engineering\site\index.html
 ```
 
-Force offline mode (skip SDK probes) with `WORKSHOP_FORCE_OFFLINE=1`.
-Honour `NO_COLOR=1` and `TERM=dumb` to suppress ANSI escapes.
+### Option 2 — Serve it locally (recommended for VS Code / Codespaces)
 
-## Modules
+```bash
+python3 -m http.server 8000 --directory workshops/sdd-evolution-harness-engineering/site
+# then open http://127.0.0.1:8000/
+```
 
-| # | Title                              | File                                                    |
-|---|------------------------------------|---------------------------------------------------------|
-| 0 | Baseline                           | [modules/00-baseline.md](./modules/00-baseline.md)     |
-| 1 | RPIV from Scratch                  | [modules/01-rpiv-from-scratch.md](./modules/01-rpiv-from-scratch.md) |
-| 2 | Sensors First                      | [modules/02-sensors-first.md](./modules/02-sensors-first.md) |
-| 3 | Research Stage                     | [modules/03-research-stage.md](./modules/03-research-stage.md) |
-| 4 | Plan Stage                         | [modules/04-plan-stage.md](./modules/04-plan-stage.md) |
-| 5 | Implement & Promote (stretch)      | [modules/05-implement-and-promote.md](./modules/05-implement-and-promote.md) |
-| 6 | Quadrant Fillers (stretch)         | [modules/06-quadrant-fillers.md](./modules/06-quadrant-fillers.md) |
-| 7 | Fan-Out (stretch)                  | [modules/07-fan-out.md](./modules/07-fan-out.md) |
-| 8 | Closing Kata                       | [modules/08-closing-kata.md](./modules/08-closing-kata.md) |
+In VS Code or Codespaces, accept the port-forward toast or use
+**Simple Browser → http://127.0.0.1:8000/**.
 
-Modules 5, 6, and 7 are **independently runnable** — completing Module 4 is
-not a prerequisite for Module 6.
+### Option 3 — Host it anywhere
+
+The site is plain HTML / CSS / JS. Drop `site/` on GitHub Pages, Netlify,
+S3, nginx — anywhere that serves static files.
+
+## What's in the workshop
+
+Nine modules walk the one-year arc of agentic coding:
+
+| # | Module | Time | Track |
+|---|--------|------|-------|
+| 0 | Baseline | 10 min | Core |
+| 1 | Plan / Implement | 20 min | Core |
+| 2 | RPIV crystallises | 35 min | Core |
+| 3 | Shared architecture | 20 min | Core |
+| 4 | Brownfield onboarding | 25 min | Core |
+| 5 | Wrap, don't fork | 25 min | Stretch |
+| 6 | Harness engineering | 30 min | Stretch |
+| 7 | Parallel agents | 20 min | Stretch |
+| 8 | Closing kata | 10 min | Wrap-up |
+
+Each module page contains: concept narrative, numbered exercises with
+copy-paste commands, "what you should see" expectations, debrief questions
+for pair discussion, and a takeaway callout.
 
 ## 90-minute condensed agenda
 
-The full workshop runs about 3h15m. For 90-minute time-boxes (e.g. a meetup
-slot), use the agenda below. Stretch modules 5–7 are **explicitly skipped**.
+Modules 0 → 2 → 8 with light pacing. Skip stretch modules entirely.
 
-| T+    | Slot                       | Commands                                           |
-|-------|----------------------------|----------------------------------------------------|
-| T+0   | Setup                      | `workshop start`, `workshop install-hooks`         |
-| T+5   | Module 0 — baseline        | `workshop run 00-baseline`, `workshop status`      |
-| T+15  | Module 1 — RPIV intro      | `workshop run 01-rpiv-from-scratch`, `workshop next` |
-| T+25  | Module 2 — sensors-first   | `workshop diagnose 2x2`, `workshop diagnose 2x2 --json` |
-| T+40  | Module 3 — research stage  | `workshop scaffold research`, `workshop coach post-research-coach`, `workshop accept-draft <id>` |
-| T+60  | Module 4 — plan stage      | `workshop scaffold plan`, `workshop scaffold adr`, `workshop accept-draft <id>` |
-| T+75  | Module 8 — closing kata    | `workshop coach kata`, `workshop debrief`          |
-| T+85  | Reset                      | `workshop reset` (idempotent)                      |
-| T+90  | End                        | —                                                  |
+## Layout
 
-**Explicitly skipped in the 90-minute condensed agenda:** Module 5 (`install-promote-ephemeral`), Module 6 (quadrant fillers), Module 7 (`fan-out`).
-
-## Command surface (canonical inventory)
-
-`start`, `install-hooks`, `next`, `status`, `verify`, `coach`, `diagnose`,
-`reset`, `run`, `debrief`, `scaffold`, `override`, `reconcile`, `onboard`,
-`install-promote-ephemeral`, `fan-out`, `accept-draft`, `reject-draft`, `help`.
-
-Flags: `--json` (on `help`/`status`/`verify`/`diagnose`), `--yes`, `--dry-run`,
-`--upgrade`, `--help`.
-
-## Draft-acceptance flow
-
-`workshop scaffold *` and `workshop onboard` **never** mutate canonical files
-directly. They write drafts under `.workshop-drafts/` and append an entry to
-`pendingScaffoldDrafts` in the state file. The only path to canonical
-mutation is `workshop accept-draft <id>`. `workshop reject-draft <id>` discards.
-
-## Tests
-
-```bash
-bash workshops/sdd-evolution-harness-engineering/test-fixtures/run-tests.sh
+```
+workshops/sdd-evolution-harness-engineering/
+├── README.md          (this file — how to open the workshop)
+├── workshop.json      (manifest; consumed by tools/registry.json)
+└── site/              (the workshop itself — open site/index.html)
+    ├── index.html
+    ├── assets/
+    │   ├── styles.css
+    │   └── app.js
+    └── modules/
+        ├── 00-baseline.html
+        ├── 01-plan-implement.html
+        ├── 02-rpiv.html
+        ├── 03-shared-architecture.html
+        ├── 04-brownfield-onboarding.html
+        ├── 05-wrap-dont-fork.html
+        ├── 06-harness-engineering.html
+        ├── 07-parallel-agents.html
+        └── 08-closing-kata.html
 ```
 
-See [`test-fixtures/MANUAL-VERIFICATION.md`](./test-fixtures/MANUAL-VERIFICATION.md)
-for the three manual procedures (facilitator dry-run, unprimed-trainee run,
-LLM-meta description).
+## Further reading
 
-## Attribution
-
-Workshop authored by [@jsburckhardt](https://github.com/jsburckhardt) for the
-[toolio](https://github.com/jsburckhardt/toolio) project under the MIT license.
-
-## See also
-
-- [`scaffold-with-copilot-sdk.md`](./scaffold-with-copilot-sdk.md) — pinned SDK
-  and Node.js versions; how the adapter would be fleshed out.
-- [`ADR-0004`](../../project/architecture/ADR/ADR-0004-extension-driven-workshop-layout.md) — the layout standard.
+- [Birgitta Böckeler — *Harness engineering for coding agent users*](https://martinfowler.com/articles/harness-engineering.html) (martinfowler.com, April 2026)
+- [`jsburckhardt/soft-factory`](https://github.com/jsburckhardt/soft-factory) — the base repo the workshop builds on
