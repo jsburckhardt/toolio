@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 0 · Baseline — SDD Evolution Workshop</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="sidebar-brand" href="../index.html">
+    <div class="title">SDD Evolution</div>
+    <div class="subtitle">From <code>#&nbsp;write a function</code> to harness engineering</div>
+  </a>
+  <div class="sidebar-section">Start here</div>
+  <ul class="sidebar-nav"><li><a href="../index.html">Overview</a></li></ul>
+  <div class="sidebar-section">Core modules</div>
+  <ul class="sidebar-nav">
+    <li><a href="00-baseline.html">0 · Baseline</a></li>
+    <li><a href="01-plan-implement.html">1 · Plan / Implement</a></li>
+    <li><a href="02-rpiv.html">2 · RPIV crystallises</a></li>
+    <li><a href="03-shared-architecture.html">3 · Shared architecture</a></li>
+    <li><a href="04-brownfield-onboarding.html">4 · Brownfield onboarding</a></li>
+  </ul>
+  <div class="sidebar-section">Stretch modules</div>
+  <ul class="sidebar-nav">
+    <li><a href="05-wrap-dont-fork.html">5 · Wrap, don&rsquo;t fork <span class="badge">stretch</span></a></li>
+    <li><a href="06-harness-engineering.html">6 · Harness engineering <span class="badge">stretch</span></a></li>
+    <li><a href="07-parallel-agents.html">7 · Parallel agents <span class="badge">stretch</span></a></li>
+  </ul>
+  <div class="sidebar-section">Wrap up</div>
+  <ul class="sidebar-nav"><li><a href="08-closing-kata.html">8 · Closing kata</a></li></ul>
+</aside>
+
+<main class="content">
+<div class="content-inner">
+
+<header class="module-header">
+  <div class="crumb">Module 0 · Core</div>
+  <h1>Baseline</h1>
+  <div class="meta">
+    <span>⏱ 10 min</span>
+    <span>Pair: driver + navigator</span>
+    <span>No setup beyond clone</span>
+  </div>
+</header>
+
+<p><strong>Goal:</strong> feel the floor before we add lego on top. You can&rsquo;t appreciate what RPIV gives you until you&rsquo;ve felt the chaos it replaces.</p>
+
+<div class="callout learn">
+  <h3>What you&rsquo;ll learn</h3>
+  <ul>
+    <li>The unit of work a <code>#&nbsp;hashtag</code> prompt actually drives.</li>
+    <li>How many decisions an unconstrained agent silently makes for you.</li>
+    <li>Why &ldquo;build me a CLI&rdquo; produces slop.</li>
+  </ul>
+</div>
+
+<h2>Concept</h2>
+
+<p>Before there were agents, there was autocomplete. You typed <code># add a function that…</code> and the model filled in the next few lines. The unit of work was a <em>line</em>, sometimes a <em>function</em>, almost never a <em>system</em>.</p>
+
+<p>Today&rsquo;s agents can write whole modules from a sentence — but if you don&rsquo;t tell them the constraints, <strong>every guess drifts</strong>. The model picks a framework. A test runner. A file layout. A naming convention. Each guess is locally plausible and globally incoherent.</p>
+
+<p>This module makes you <em>feel</em> that drift, so the rest of the workshop has somewhere to land.</p>
+
+<div class="exercise">
+  <span class="exercise-tag">Exercise 0.1</span>
+  <h3>The <code>#&nbsp;hashtag</code> flow</h3>
+  <p>Open any source file in your repo. Type a <code>#</code> comment describing a small change. Let autocomplete run.</p>
+
+  <pre><code><span class="tok-cmt"># add a CLI flag --dry-run that prints planned changes and exits 0</span></code></pre>
+
+  <p>Stop after 5 minutes. Don&rsquo;t fix what came out. Just <strong>look at it</strong> with your pair.</p>
+
+  <div class="callout expected">
+    <h3>What you should see</h3>
+    <p>Probably a single function with the flag added, or a copy-paste of part of your file with one new <code>if</code> branch. <em>Maybe</em> a test if you got lucky.</p>
+  </div>
+
+  <h4>Debrief in pairs</h4>
+  <ul>
+    <li>What was the unit of work? One line? One function? One file?</li>
+    <li>What did the model assume that you didn&rsquo;t tell it?</li>
+    <li>Where did the wheels start coming off?</li>
+  </ul>
+</div>
+
+<div class="exercise">
+  <span class="exercise-tag">Exercise 0.2</span>
+  <h3>Scale the same prompt up</h3>
+  <p>Now ask your agent the same flavour of question, but at system scale:</p>
+
+  <pre><code><span class="tok-cmt"># Prompt your agent (Claude, Copilot, OpenCode, whatever):</span>
+<span class="tok-str">&ldquo;Build a CLI that supports --dry-run, --verbose, and --config, with tests.&rdquo;</span></code></pre>
+
+  <p><strong>Do not constrain it.</strong> Don&rsquo;t pick the framework. Don&rsquo;t tell it the test runner. Don&rsquo;t suggest a file layout. Just ship the prompt and watch.</p>
+
+  <div class="callout warning">
+    <h3>Don&rsquo;t fix the slop</h3>
+    <p>You&rsquo;ll be tempted. Resist. The slop is the lesson. Count the decisions the agent made on your behalf:</p>
+    <ul>
+      <li>Which language? Which version?</li>
+      <li>Which CLI framework (click? argparse? cobra? oclif? commander?)</li>
+      <li>Which config format (yaml? toml? json? env vars?)</li>
+      <li>Which test runner? Which assertion style?</li>
+      <li>What is &ldquo;dry-run&rdquo; actually supposed to <em>print</em>?</li>
+      <li>What does <code>--verbose</code> mean &mdash; log level? structured output? both?</li>
+    </ul>
+  </div>
+
+  <h4>Debrief</h4>
+  <ul>
+    <li>How many of those decisions match how the rest of your codebase is built?</li>
+    <li>How many of those decisions would survive code review?</li>
+    <li>Which decision would have been <em>easy</em> for you to give the agent, if you&rsquo;d known it would invent one?</li>
+  </ul>
+</div>
+
+<div class="callout takeaway">
+  <h3>Takeaway</h3>
+  <p>The model is just guessing what comes next. Without constraints, every guess drifts. <strong>Prompt engineering isn&rsquo;t magic incantations — it&rsquo;s telling the agent the constraints, because if you don&rsquo;t, it will invent them.</strong></p>
+  <p>The rest of the workshop is about <em>where</em> those constraints live, and <em>who</em> writes them.</p>
+</div>
+
+<nav class="prev-next">
+  <a class="prev none">&nbsp;</a>
+  <a class="next" href="01-plan-implement.html">
+    <div class="dir">Next module →</div>
+    <div class="label">1 · Plan / Implement</div>
+  </a>
+</nav>
+
+</div>
+</main>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

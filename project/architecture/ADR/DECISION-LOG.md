@@ -8,6 +8,7 @@ This file is the single registry of all architectural decisions and core-compone
 |----|-------|--------|------|
 | ADR-0002 | Repository Layout Standard | Accepted | 2025-06-20 |
 | ADR-0003 | Tool and Workshop Packaging Convention | Accepted | 2025-06-20 |
+| ADR-0004 | Extension-Driven Workshop Layout Standard | Accepted | 2026-05-19 |
 
 ## Core-Components
 
@@ -38,3 +39,10 @@ Short, actionable statements derived from ADRs and core-components. More than on
 | 15 | Use check-jsonschema (Python) for JSON Schema validation in CI and locally | ADR-0003 | 2025-06-20 |
 | 16 | Generate registry.json via scripts/rebuild-registry.sh using bash and jq | ADR-0003 | 2025-06-20 |
 | 17 | Prohibit hand-editing of tools/registry.json | ADR-0003 | 2025-06-20 |
+| 18 | Permit two workshop layouts: `steps/` for read-along and `extension/`+`modules/` for interactive harness workshops | ADR-0004 | 2026-05-19 |
+| 19 | Require every interactive workshop to ship an offline bash entrypoint at `extension/bin/workshop` | ADR-0004 | 2026-05-19 |
+| 20 | Prohibit workshop extensions from writing outside `workshops/<slug>/` at install or runtime | ADR-0004 | 2026-05-19 |
+| 21 | Prohibit adding a `layout` field to `workshop.json`; infer workshop layout from directory presence | ADR-0004 | 2026-05-19 |
+| 22 | Require `workshops/README.md` to document both Layout A and Layout B side-by-side | ADR-0004 | 2026-05-19 |
+| 23 | Defer ADR-0005 (Copilot CLI plugin install convention) until `copilot /plugin install` introduces a repo-root path | ADR-0004 | 2026-05-19 |
+| 24 | Defer CORE-COMPONENT-0003 (Workshop Harness Pattern) until a second harness workshop is proposed | ADR-0004 | 2026-05-19 |

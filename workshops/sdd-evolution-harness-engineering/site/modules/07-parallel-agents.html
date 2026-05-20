@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 7 · Parallel agents — SDD Evolution Workshop</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="sidebar-brand" href="../index.html">
+    <div class="title">SDD Evolution</div>
+    <div class="subtitle">From <code>#&nbsp;write a function</code> to harness engineering</div>
+  </a>
+  <div class="sidebar-section">Start here</div>
+  <ul class="sidebar-nav"><li><a href="../index.html">Overview</a></li></ul>
+  <div class="sidebar-section">Core modules</div>
+  <ul class="sidebar-nav">
+    <li><a href="00-baseline.html">0 · Baseline</a></li>
+    <li><a href="01-plan-implement.html">1 · Plan / Implement</a></li>
+    <li><a href="02-rpiv.html">2 · RPIV crystallises</a></li>
+    <li><a href="03-shared-architecture.html">3 · Shared architecture</a></li>
+    <li><a href="04-brownfield-onboarding.html">4 · Brownfield onboarding</a></li>
+  </ul>
+  <div class="sidebar-section">Stretch modules</div>
+  <ul class="sidebar-nav">
+    <li><a href="05-wrap-dont-fork.html">5 · Wrap, don&rsquo;t fork <span class="badge">stretch</span></a></li>
+    <li><a href="06-harness-engineering.html">6 · Harness engineering <span class="badge">stretch</span></a></li>
+    <li><a href="07-parallel-agents.html">7 · Parallel agents <span class="badge">stretch</span></a></li>
+  </ul>
+  <div class="sidebar-section">Wrap up</div>
+  <ul class="sidebar-nav"><li><a href="08-closing-kata.html">8 · Closing kata</a></li></ul>
+</aside>
+
+<main class="content">
+<div class="content-inner">
+
+<header class="module-header">
+  <div class="crumb">Module 7 · Stretch</div>
+  <h1>Parallel agents</h1>
+  <div class="meta">
+    <span>⏱ 20 min</span>
+    <span>Stretch — skip in 90-min slot</span>
+    <span>Requires: a feature with 3+ independent stories</span>
+  </div>
+</header>
+
+<p><strong>Goal:</strong> decompose a feature into multiple workitems that don&rsquo;t step on each other.</p>
+
+<div class="callout learn">
+  <h3>What you&rsquo;ll learn</h3>
+  <ul>
+    <li><code>git worktree</code> as the parallelism primitive.</li>
+    <li>The difference between a <em>rendezvous point</em> (must coordinate) and a <em>fan-out point</em> (parallel-safe).</li>
+    <li>How shared architecture (Module 3) is what makes parallelism survive merge.</li>
+  </ul>
+</div>
+
+<h2>Concept</h2>
+
+<p>One agent on one workitem is easy. Three agents on three workitems against the same repo is where the harness earns its keep. Each agent must respect the same ADRs, the same core-components, the same conventions &mdash; otherwise they&rsquo;ll each invent locally-plausible changes that collide globally.</p>
+
+<p><strong>Surfaces in your repo fall into two categories:</strong></p>
+
+<ul>
+  <li><strong>Rendezvous points</strong> &mdash; only one workitem touches them at a time (the ADR directory, shared schemas, top-level config). Need coordination.</li>
+  <li><strong>Fan-out points</strong> &mdash; many workitems touch them safely in parallel (separate route files, separate test files, separate modules). Parallel-safe.</li>
+</ul>
+
+<div class="exercise">
+  <span class="exercise-tag">Exercise 7.1</span>
+  <h3>Decompose</h3>
+
+  <p>Take a feature with at least 3 independent stories. Open 3 GitHub issues:</p>
+
+  <pre><code>gh issue create --title <span class="tok-str">"WI-43: add /users endpoint"</span>
+gh issue create --title <span class="tok-str">"WI-44: add /orders endpoint"</span>
+gh issue create --title <span class="tok-str">"WI-45: add /products endpoint"</span></code></pre>
+
+  <p>Use <code>git worktree</code> to set up three working copies, one per issue:</p>
+
+  <pre><code>git worktree add ../soft-factory-WI-43 -b feature/wi-43
+git worktree add ../soft-factory-WI-44 -b feature/wi-44
+git worktree add ../soft-factory-WI-45 -b feature/wi-45</code></pre>
+
+  <p>Each worktree is a full checkout of the repo on its own branch, sharing the same <code>.git/</code> common dir.</p>
+</div>
+
+<div class="exercise">
+  <span class="exercise-tag">Exercise 7.2</span>
+  <h3>Run RPIV in parallel</h3>
+
+  <p>Open three terminals (or three agent sessions). Run the full RPIV loop against each worktree simultaneously.</p>
+
+  <div class="callout warning">
+    <h3>The constraint</h3>
+    <p>All three workitems MUST respect the same ADRs. <strong>None of them can silently change <code>project/architecture/</code>.</strong></p>
+    <p>If a workitem needs a new ADR, that&rsquo;s a separate workitem with its own issue. Architectural change is never a side effect.</p>
+  </div>
+
+  <div class="callout expected">
+    <h3>What you should see</h3>
+    <p>Three branches finish independently. Each has its own <code>project/issues/&lt;N&gt;/</code> folder. Each consumed the same ADRs. None of them touched <code>project/architecture/</code>.</p>
+  </div>
+</div>
+
+<div class="exercise">
+  <span class="exercise-tag">Exercise 7.3</span>
+  <h3>Where do they collide?</h3>
+
+  <p>When the three branches hit <code>main</code>, where do conflicts land? Walk through it as a pair:</p>
+
+  <ul>
+    <li><strong>File-level conflicts:</strong> two branches modified the same line of the same file. Rare if you decomposed well.</li>
+    <li><strong>Schema-level conflicts:</strong> two branches added competing columns or fields. Often caught by tests, sometimes silent.</li>
+    <li><strong>ADR-level conflicts:</strong> two branches made incompatible assumptions about an ADR (e.g., both added a route that conflicts on URL pattern). The hardest to spot; only catches in integration.</li>
+  </ul>
+
+  <p>Update <code>AGENTS.md</code> to declare which surfaces are rendezvous-points and which are fan-out-points:</p>
+
+  <pre><code><span class="tok-kw">##</span> Rendezvous points (single-writer at a time)
+- project/architecture/
+- schemas/
+- top-level config (pyproject.toml, package.json)
+
+<span class="tok-kw">##</span> Fan-out points (parallel-safe)
+- src/routes/ (one file per endpoint)
+- tests/ (co-located with source)
+- project/issues/&lt;N&gt;/ (per-WI; never overlaps)</code></pre>
+
+  <h4>Debrief</h4>
+  <ul>
+    <li>How many of your three workitems touched a rendezvous point you didn&rsquo;t expect?</li>
+    <li>What pattern in your code makes a surface accidentally a rendezvous point? (Hint: shared mutable state, global registries, central config.)</li>
+    <li>If you ran 10 worktrees in parallel instead of 3, which surface breaks first?</li>
+  </ul>
+</div>
+
+<div class="callout takeaway">
+  <h3>Takeaway</h3>
+  <p>The frontier isn&rsquo;t whether the flow works. The flow is fine. <strong>The frontier is how far you can scale parallelism before the harness needs to grow.</strong></p>
+  <p>Every rendezvous point you discover is a hint about where the next harness component belongs.</p>
+</div>
+
+<nav class="prev-next">
+  <a class="prev" href="06-harness-engineering.html">
+    <div class="dir">← Previous module</div>
+    <div class="label">6 · Harness engineering</div>
+  </a>
+  <a class="next" href="08-closing-kata.html">
+    <div class="dir">Next module →</div>
+    <div class="label">8 · Closing kata</div>
+  </a>
+</nav>
+
+</div>
+</main>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

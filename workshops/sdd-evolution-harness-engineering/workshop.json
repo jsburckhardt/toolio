@@ -1,0 +1,27 @@
+{
+  "$schema": "../../schemas/workshop.schema.json",
+  "name": "sdd-evolution-harness-engineering",
+  "displayName": "SDD Evolution — From `# write a function` to Harness Engineering",
+  "version": "1.0.0",
+  "description": "Hands-on, lego-style workshop on the one-year arc of agentic coding: from hashtag prompts through the four-stage RPIV pipeline (Research, Plan, Implement, Verify) into shared architecture, brownfield onboarding, wrapping upstream agents, the harness 2×2 (guides × sensors / computational × inferential), and parallel agents. Delivered as a self-contained static website.",
+  "author": "jsburckhardt",
+  "license": "MIT",
+  "difficulty": "advanced",
+  "estimatedDuration": "3h15m",
+  "prerequisites": [
+    "A coding-agent CLI you are comfortable with (Claude Code, OpenCode, Copilot CLI, or similar)",
+    "git, gh, and a Python or Node toolchain installed",
+    "A GitHub account with `gh auth login` working",
+    "A modern web browser (the workshop is a static HTML site under site/)"
+  ],
+  "objectives": [
+    "Articulate what each RPIV stage produces and consumes without a cheat sheet",
+    "Promote a workitem decision into a shared ADR and have Research read it back automatically",
+    "Stand up RPIV on a brownfield repo by inferring implicit ADRs from existing code",
+    "Wrap an upstream coding agent without forking it by declaring artifact-path contracts",
+    "Distinguish guides (feedforward) from sensors (feedback), and computational from inferential mechanisms",
+    "Decompose a feature into parallel workitems that respect shared architecture and rendezvous points"
+  ],
+  "tags": ["sdd", "rpiv", "harness-engineering", "agents", "brownfield", "advanced", "website", "pair-workshop"]
+}
+

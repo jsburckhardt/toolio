@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-05-19T09:33:27Z",
+  "generatedAt": "2026-05-20T02:40:22Z",
   "tools": [
     {
       "slug": "devcontainer-toolio",
@@ -18,6 +18,11 @@
       "slug": "creating-your-first-tool",
       "path": "workshops/creating-your-first-tool",
       "manifest": "workshops/creating-your-first-tool/workshop.json"
+    },
+    {
+      "slug": "sdd-evolution-harness-engineering",
+      "path": "workshops/sdd-evolution-harness-engineering",
+      "manifest": "workshops/sdd-evolution-harness-engineering/workshop.json"
     }
   ]
 }
