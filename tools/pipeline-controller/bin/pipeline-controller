@@ -1,0 +1,175 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TOOL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Default configuration
+PORT=8080
+ISSUE_NUMBER=""
+
+# --- Usage ---
+usage() {
+  cat <<EOF
+Usage: pipeline-controller <issue_number> [--port PORT]
+
+Visual orchestration UI for the RPIV pipeline.
+
+Arguments:
+  issue_number    GitHub issue number (required)
+
+Options:
+  --port PORT     HTTP server port (default: 8080)
+  --help          Show this help message
+
+Examples:
+  pipeline-controller 42
+  pipeline-controller 42 --port 9090
+EOF
+}
+
+# --- Argument Parsing ---
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --port)
+      if [[ -z "${2:-}" ]]; then
+        echo "ERROR: --port requires a value" >&2
+        exit 1
+      fi
+      PORT="$2"
+      shift 2
+      ;;
+    -*)
+      echo "ERROR: Unknown option: $1" >&2
+      usage >&2
+      exit 1
+      ;;
+    *)
+      if [[ -z "$ISSUE_NUMBER" ]]; then
+        ISSUE_NUMBER="$1"
+      else
+        echo "ERROR: Unexpected argument: $1" >&2
+        usage >&2
+        exit 1
+      fi
+      shift
+      ;;
+  esac
+done
+
+if [[ -z "$ISSUE_NUMBER" ]]; then
+  echo "ERROR: Issue number is required" >&2
+  usage >&2
+  exit 1
+fi
+
+# --- Prerequisite Checks ---
+check_prereqs() {
+  local missing=0
+
+  if ! command -v gh &>/dev/null; then
+    echo "ERROR: 'gh' (GitHub CLI) is not installed" >&2
+    missing=1
+  elif ! gh auth status &>/dev/null; then
+    echo "ERROR: 'gh' is not authenticated. Run: gh auth login" >&2
+    missing=1
+  fi
+
+  if ! command -v jq &>/dev/null; then
+    echo "ERROR: 'jq' is not installed" >&2
+    missing=1
+  fi
+
+  if ! command -v python3 &>/dev/null; then
+    echo "ERROR: 'python3' is not installed" >&2
+    missing=1
+  fi
+
+  if [[ $missing -ne 0 ]]; then
+    exit 1
+  fi
+}
+
+check_prereqs
+
+# --- Validate Issue ---
+if ! gh issue view "$ISSUE_NUMBER" --json number &>/dev/null; then
+  echo "ERROR: Issue #$ISSUE_NUMBER not found or not accessible" >&2
+  exit 1
+fi
+
+# --- Source State Helpers ---
+# shellcheck disable=SC1091
+source "$TOOL_DIR/lib/state.sh"
+
+# --- Initialize State ---
+state_init "$ISSUE_NUMBER"
+
+# --- Find Free Port ---
+check_port() {
+  local port="$1"
+  if command -v ss &>/dev/null; then
+    if ss -tlnp 2>/dev/null | grep -q ":${port} "; then
+      return 1
+    fi
+    return 0
+  else
+    # Fallback: try to connect
+    if (echo >/dev/tcp/localhost/"$port") 2>/dev/null; then
+      return 1
+    fi
+    return 0
+  fi
+}
+
+if ! check_port "$PORT"; then
+  echo "WARNING: Port $PORT is busy, searching for a free port..." >&2
+  for p in $(seq "$((PORT + 1))" "$((PORT + 100))"); do
+    if check_port "$p"; then
+      PORT="$p"
+      break
+    fi
+  done
+fi
+
+# --- Start Server ---
+SERVER_PID=""
+
+cleanup() {
+  if [[ -n "$SERVER_PID" ]]; then
+    kill "$SERVER_PID" 2>/dev/null || true
+    wait "$SERVER_PID" 2>/dev/null || true
+  fi
+}
+
+trap cleanup EXIT INT TERM
+
+python3 "$TOOL_DIR/lib/server.py" --port "$PORT" --site-dir "$TOOL_DIR/site" --state-file "$(state_file_path)" &
+SERVER_PID=$!
+
+# Wait briefly for server to start
+sleep 1
+
+if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+  echo "ERROR: Server failed to start" >&2
+  exit 1
+fi
+
+echo "Pipeline Controller running at: http://localhost:$PORT"
+echo "Issue: #$ISSUE_NUMBER"
+echo "State file: $(state_file_path)"
+echo "Press Ctrl+C to stop"
+
+# --- Open Browser (optional) ---
+if command -v xdg-open &>/dev/null; then
+  xdg-open "http://localhost:$PORT" 2>/dev/null &
+elif command -v open &>/dev/null; then
+  open "http://localhost:$PORT" 2>/dev/null &
+fi
+
+# --- Wait for Server ---
+wait "$SERVER_PID"

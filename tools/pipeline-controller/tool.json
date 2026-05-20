@@ -1,0 +1,15 @@
+{
+  "$schema": "../../schemas/tool.schema.json",
+  "name": "pipeline-controller",
+  "displayName": "Pipeline Controller",
+  "version": "0.1.0",
+  "description": "Visual orchestration UI for the RPIV pipeline — launch, monitor, and control Research/Plan/Implement/Verify stages",
+  "author": "jsburckhardt",
+  "license": "MIT",
+  "type": "extension",
+  "tags": ["pipeline", "rpiv", "extension", "orchestration", "visual"],
+  "platforms": ["copilot-cli", "generic"],
+  "entrypoint": "bin/pipeline-controller",
+  "dependencies": ["soft-factory-agents"],
+  "minAgentVersion": null
+}
