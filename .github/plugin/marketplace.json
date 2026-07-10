@@ -1,0 +1,24 @@
+{
+  "name": "toolio",
+  "owner": {
+    "name": "Juan Burckhardt"
+  },
+  "metadata": {
+    "description": "Reusable Copilot agents, skills, and engineering workflow plugins.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "soft-factory",
+      "description": "Soft Factory engineering pipeline: RPIV agents and skills, plus bootstrap, onboarding, issue generation, and the Agnostic Prompt Standard.",
+      "version": "0.1.0",
+      "source": "plugins/soft-factory"
+    },
+    {
+      "name": "visual-explainer",
+      "description": "Generate self-contained HTML pages for diagrams, diff/plan reviews, project recaps, comparison tables, and slide decks.",
+      "version": "0.8.1",
+      "source": "plugins/visual-explainer"
+    }
+  ]
+}

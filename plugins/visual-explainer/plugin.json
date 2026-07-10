@@ -1,0 +1,16 @@
+{
+  "name": "visual-explainer",
+  "description": "Generate beautiful, self-contained HTML pages that visually explain systems, code changes, plans, and data — diagrams, diff/plan reviews, project recaps, comparison tables, and slide decks.",
+  "version": "0.8.1",
+  "author": {
+    "name": "nicobailon"
+  },
+  "repository": "https://github.com/nicobailon/visual-explainer",
+  "license": "MIT",
+  "commands": [
+    "./commands"
+  ],
+  "skills": [
+    "./skills/visual-explainer"
+  ]
+}
