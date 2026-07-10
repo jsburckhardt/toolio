@@ -1,0 +1,14 @@
+{
+  "name": "soft-factory",
+  "description": "Soft Factory engineering pipeline: RPIV (Research, Plan, Implement, Verify) agents and skills, plus bootstrap, onboarding, issue generation, and the Agnostic Prompt Standard.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Juan Burckhardt"
+  },
+  "agents": [
+    "./agents"
+  ],
+  "skills": [
+    "./skills/pr-review-complement"
+  ]
+}

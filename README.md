@@ -1,11 +1,50 @@
-# Project Name
+# toolio
 
-<!-- Replace with a short description of your project. -->
-[![APS version](https://img.shields.io/badge/APS-v1.2.2-blue?logo=github)](https://github.com/chris-buckley/agnostic-prompt-standard/releases/tag/v1.2.2)
+Reusable Copilot agents, skills, and engineering workflow plugins.
 
-## Documentation
+## Plugins
 
-- [`CONTRIBUTING.md`](CONTRIBUTING.md) — pipeline workflow, how to contribute via GitHub Issues, and where artifacts belong
-- [`AGENTS.md`](AGENTS.md) — agent definitions, guardrails, and pipeline specification
-- [`docs/`](docs/) — application-specific documentation (API docs, user guides, etc.)
-- [`project/`](project/) — architecture decisions, core-components, and per-issue pipeline artifacts
+| Plugin | Description |
+| --- | --- |
+| `soft-factory` | Full Soft Factory engineering pipeline: RPIV agents and skills, plus bootstrap, onboarding, issue generation, and the Agnostic Prompt Standard. |
+| `visual-explainer` | Generate self-contained HTML pages for diagrams, diff/plan reviews, project recaps, comparison tables, and slide decks. |
+
+## Layout
+
+```
+toolio/
+├── README.md
+├── .github/
+│   └── plugin/
+│       └── marketplace.json
+└── plugins/
+    ├── soft-factory/
+    │   ├── plugin.json
+    │   ├── agents/
+    │   │   └── *.agent.md          # research, planner, implementer, verifier, justdoit, …
+    │   └── skills/
+    │       └── pr-review-complement/
+    └── visual-explainer/
+        ├── plugin.json
+        ├── commands/               # /diff-review, /plan-review, /generate-slides, …
+        └── skills/
+            └── visual-explainer/
+                ├── SKILL.md
+                ├── references/     # css-patterns, libraries, responsive-nav, slide-patterns
+                └── templates/      # architecture, data-table, mermaid-flowchart, slide-deck
+```
+
+## Install
+
+Install the marketplace:
+
+```bash
+copilot plugin marketplace add jsburckhardt/toolio
+```
+
+Install a plugin:
+
+```bash
+copilot plugin install soft-factory@toolio
+copilot plugin install visual-explainer@toolio
+```
