@@ -1,0 +1,12 @@
+{
+  "name": "soft-factory-extras",
+  "description": "Extra Soft Factory agents. Includes the deep-research orchestrator that runs an Exa-powered, Microsoft-preferring research pipeline and writes schema-conformant reports to project/deep-research.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Juan Burckhardt"
+  },
+  "agents": [
+    "./agents"
+  ],
+  "mcpServers": "./.mcp.json"
+}
