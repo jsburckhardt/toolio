@@ -7,6 +7,7 @@ Reusable Copilot agents, skills, and engineering workflow plugins.
 | Plugin | Description |
 | --- | --- |
 | `soft-factory` | Full Soft Factory engineering pipeline: RPIV agents and skills, plus bootstrap, onboarding, issue generation, and the Agnostic Prompt Standard. |
+| `soft-factory-extras` | Extra Soft Factory agents, including the `deep-research` orchestrator that runs an Exa-powered, Microsoft-preferring research pipeline. |
 | `visual-explainer` | Generate self-contained HTML pages for diagrams, diff/plan reviews, project recaps, comparison tables, and slide decks. |
 
 ## Layout

@@ -1,0 +1,45 @@
+# toolio
+
+> A GitHub Copilot CLI plugin marketplace of reusable agents, skills, and engineering-workflow plugins, plus a vendored copy of the Agnostic Prompt Standard (APS) v1.0.
+
+toolio is installed with `copilot plugin marketplace add jsburckhardt/toolio`, then
+individual plugins with `copilot plugin install <plugin>@toolio`. Plugins bundle
+Copilot agents (`*.agent.md` / `*.agent.yaml`), skills (`SKILL.md`), and slash
+commands. Agents are authored to the APS v1.0 standard that lives in
+`.github/skills/agnostic-prompt-standard/`.
+
+## Repo docs
+
+- [README](README.md): Marketplace overview, plugin table, and install commands.
+- [AGENTS.md](AGENTS.md): Repository-wide instructions for AI agents and contributors.
+- [Marketplace manifest](.github/plugin/marketplace.json): Source of truth for published plugins.
+- [Pull request template](.github/pull_request_template.md): Contribution checklist.
+
+## Plugins
+
+- [soft-factory manifest](plugins/soft-factory/plugin.json): RPIV agents plus bootstrap, onboarding, issue generation, and the APS.
+- [soft-factory-extras manifest](plugins/soft-factory-extras/plugin.json): Extra agents; references a bundled MCP config via `mcpServers`.
+- [deep-research agent](plugins/soft-factory-extras/agents/deep-research.agent.md): Exa-powered, Microsoft-preferring deep-research orchestrator.
+- [soft-factory-extras .mcp.json](plugins/soft-factory-extras/.mcp.json): Exa hosted MCP server (`https://mcp.exa.ai/mcp`).
+- [visual-explainer manifest](plugins/visual-explainer/plugin.json): Self-contained HTML diagrams, reviews, recaps, and slide decks.
+- [visual-explainer skill](plugins/visual-explainer/skills/visual-explainer/SKILL.md): The skill entrypoint with references and HTML templates.
+
+## Standards
+
+- [APS skill entrypoint](.github/skills/agnostic-prompt-standard/SKILL.md): Agnostic Prompt Standard v1.0 skill index.
+- [APS structure](.github/skills/agnostic-prompt-standard/references/00-structure.md): Normative section structure for agents.
+- [APS vocabulary](.github/skills/agnostic-prompt-standard/references/01-vocabulary.md): MUST/SHOULD/MAY vocabulary rules.
+- [APS linting & formatting](.github/skills/agnostic-prompt-standard/references/02-linting-and-formatting.md): Lint and formatting rules.
+- [APS error taxonomy](.github/skills/agnostic-prompt-standard/references/07-error-taxonomy.md): AG-xxx error codes.
+- [Skill authoring guide](.github/skills/agnostic-prompt-standard/guides/skill-authoring-v1.0.0.guide.md): How to build a skill.
+- [Repo APS agent](.github/agents/aps-v1.2.2.agent.md): Repo-level agent that generates APS-compliant agents.
+
+## Optional
+
+- [pr-review-complement skill](plugins/soft-factory/skills/pr-review-complement/SKILL.md): PR-review complement skill in soft-factory.
+- [research agent](plugins/soft-factory/agents/research.agent.md): VSCode-format RPIV research-stage agent.
+- [planner agent](plugins/soft-factory/agents/planner.agent.md): RPIV plan-stage agent.
+- [implementer agent](plugins/soft-factory/agents/implementer.agent.md): RPIV implement-stage agent.
+- [verifier agent](plugins/soft-factory/agents/verifier.agent.md): RPIV verify-stage agent.
+- [Platform adapters](.github/skills/agnostic-prompt-standard/platforms/README.md): Per-platform adaptor.md files (copilot-cli, vscode-copilot, claude-code, opencode, generic).
+- [session-metrics extension](session-metrics/extension.mjs): In-memory Copilot CLI session token/friction metrics.
