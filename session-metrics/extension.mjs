@@ -9,6 +9,7 @@
 // session ends.
 
 import { writeFileSync } from "node:fs";
+import { resolve, sep } from "node:path";
 import { joinSession } from "@github/copilot-sdk/extension";
 
 const VERSION = "0.1.0";
@@ -369,9 +370,18 @@ const session = await joinSession({
                     const snap = snapshot();
                     let artifactMsg = "";
                     if (args.write_artifact || args.out) {
-                        const path =
+                        const requested =
                             (typeof args.out === "string" && args.out.trim()) ||
                             `copilot-session-metrics-${short(snap.session.id)}.md`;
+                        const cwd = process.cwd();
+                        const path = resolve(cwd, requested);
+                        if (path !== cwd && !path.startsWith(cwd + sep)) {
+                            return {
+                                textResultForLlm:
+                                    `session-metrics: refusing to write outside the working directory: ${requested}`,
+                                resultType: "failure",
+                            };
+                        }
                         writeFileSync(path, renderMarkdown(snap), "utf8");
                         artifactMsg = `\n\n(wrote artifact: ${path})`;
                     }
@@ -453,12 +463,12 @@ session.on("assistant.usage", (event) => {
             state.costMultiplierSum += d.cost;
             state.costCalls += 1;
         }
-        if (typeof d.duration === "number") {
+        if (Number.isFinite(d.duration)) {
             state.durations.push(d.duration);
             state.totalApiDurationMs += d.duration;
             if (d.duration > LONG_REQUEST_MS) state.longRequests += 1;
         }
-        if (typeof d.timeToFirstTokenMs === "number") {
+        if (Number.isFinite(d.timeToFirstTokenMs)) {
             state.ttfts.push(d.timeToFirstTokenMs);
             if (d.timeToFirstTokenMs > SLOW_TTFT_MS) state.slowTtft += 1;
         }

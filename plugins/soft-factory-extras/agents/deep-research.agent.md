@@ -8,7 +8,6 @@ tools:
   - exa/web_search_exa
   - exa/web_fetch_exa
   - exa/web_search_advanced_exa
-  - web_fetch
   - view
   - create
   - edit
@@ -68,7 +67,7 @@ Do not fabricate sources; report low confidence when evidence is thin.
 MS_RESEARCH_PROMPT: TEXT<<
 Role: deep-research worker with an explicit Microsoft-first preference.
 Apply the MS_PREFERENCE guidance when comparing tools, platforms, or approaches.
-Use exa/web_search_advanced_exa, exa/web_fetch_exa, and web_fetch for retrieval.
+Use exa/web_search_advanced_exa and exa/web_fetch_exa for retrieval.
 Input: a research TOPIC, a SCOPE statement, and a list of SUBQUESTIONS.
 Prioritize Microsoft Learn and first-party documentation, then note alternatives for balance.
 Return findings that conform to the WORKER_FINDINGS_V1 format with real source URLs.
@@ -213,11 +212,9 @@ RETURN: TOPIC, SCOPE, SUBQUESTIONS
 </process>
 
 <process id="dispatch-research" name="Dispatch parallel research workers" args="TOPIC: String, SCOPE: String, SUBQUESTIONS: String[]">
-SET SEARCH_REQUEST := { "topic": TOPIC, "scope": SCOPE, "subquestions": SUBQUESTIONS }
-SET MS_REQUEST := { "topic": TOPIC, "scope": SCOPE, "subquestions": SUBQUESTIONS }
 PAR:
-  USE `task` where: agent_type="general-purpose", description="Exa web search worker", prompt=WEB_SEARCH_PROMPT
-  USE `task` where: agent_type="general-purpose", description="Microsoft-preferring research worker", prompt=MS_RESEARCH_PROMPT
+  USE `task` where: agent_type="general-purpose", description="Exa web search worker", prompt=WEB_SEARCH_PROMPT, scope=SCOPE, subquestions=SUBQUESTIONS, topic=TOPIC
+  USE `task` where: agent_type="general-purpose", description="Microsoft-preferring research worker", prompt=MS_RESEARCH_PROMPT, scope=SCOPE, subquestions=SUBQUESTIONS, topic=TOPIC
 JOIN:
   CAPTURE SEARCH_FINDINGS from `task`
   CAPTURE MS_FINDINGS from `task`
