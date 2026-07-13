@@ -3,7 +3,9 @@ name: issue-aligner
 description: "Align an issue, ticket, or story before RPIV by retrieving provider-neutral source context, resolving ambiguity interactively, recording decisions, and updating only after approval."
 model: ""
 tools:
-  - "*"
+  - ask_user
+  - bash
+  - list_agents
 ---
 
 <instructions>
@@ -330,6 +332,7 @@ USER_SOURCE: ""
 INTERPRETATIONS: ""
 AMBIGUITIES: []
 PENDING_QUESTIONS: []
+CLARIFICATIONS: []
 DECISIONS: []
 ACCEPTED_ASSUMPTIONS: []
 DEFERRED_QUESTIONS: []
@@ -344,6 +347,8 @@ UPDATE_APPROVED: false
 UPDATE_RESULT: {}
 UPDATE_SUCCEEDED: false
 UPDATE_VERIFIED: false
+PERSISTENCE: ""
+VERIFICATION: ""
 MANUAL_MODE: false
 MANUAL_CONSENT: false
 RPIV_CAPABILITY: ""
@@ -358,7 +363,7 @@ FINAL_DETAILS: ""
 <processes>
 <process id="route" name="Run stateful issue alignment">
 IF PHASE = "complete":
-  RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence=<PERSISTENCE>, readiness=READINESS, rpiv_status=RPIV_CAPABILITY, user_choice=RPIV_CHOICE, verification=<VERIFICATION>
+  RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence=PERSISTENCE, readiness=READINESS, rpiv_status=RPIV_CAPABILITY, user_choice=RPIV_CHOICE, verification=VERIFICATION
 IF ISSUE_REFERENCE is empty:
   RUN `request-reference`
 IF ISSUE_REFERENCE is empty:
@@ -369,8 +374,10 @@ RUN `discover-capabilities`
 RUN `retrieve-issue`
 IF SOURCE_AVAILABLE is false:
   SET READINESS := "not ready because blocking questions remain" (from "Agent Inference")
+  SET PERSISTENCE := "Not performed" (from "Agent Inference")
+  SET VERIFICATION := "No source retrieved" (from "Agent Inference")
   SET PHASE := "complete" (from "Agent Inference")
-  RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence="Not performed", readiness=READINESS, rpiv_status="Not checked", user_choice="Alignment stopped", verification="No source retrieved"
+  RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence=PERSISTENCE, readiness=READINESS, rpiv_status="Not checked", user_choice="Alignment stopped", verification=VERIFICATION
 RUN `present-source`
 RUN `analyze-ambiguities`
 RUN `clarify-ambiguities`
@@ -380,25 +387,35 @@ RUN `compose-update`
 RUN `approve-update`
 IF UPDATE_APPROVED is false:
   SET FINAL_DETAILS := "The proposal was not approved, so the issue was not changed." (from "Agent Inference")
+  SET PERSISTENCE := "Not performed" (from "Agent Inference")
+  SET VERIFICATION := "Not applicable" (from "Agent Inference")
   SET PHASE := "complete" (from "Agent Inference")
-  RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence="Not performed", readiness=READINESS, rpiv_status="Not checked", user_choice="Approval withheld", verification="Not applicable"
+  RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence=PERSISTENCE, readiness=READINESS, rpiv_status="Not checked", user_choice="Approval withheld", verification=VERIFICATION
 IF UPDATE_CAPABILITY is empty:
   RUN `offer-manual-update`
+  SET PERSISTENCE := "Not performed" (from "Agent Inference")
+  SET VERIFICATION := "Unavailable" (from "Agent Inference")
   SET PHASE := "complete" (from "Agent Inference")
   IF MANUAL_CONSENT is true:
     RETURN: format="MANUAL_UPDATE", alignment_section=ALIGNMENT_SECTION, issue_reference=ISSUE_REFERENCE, readiness=READINESS, reason=FINAL_DETAILS
-  RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence="Not performed", readiness=READINESS, rpiv_status="Not checked", user_choice="Manual path declined", verification="Unavailable"
+  RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence=PERSISTENCE, readiness=READINESS, rpiv_status="Not checked", user_choice="Manual path declined", verification=VERIFICATION
 RUN `persist-update`
 IF UPDATE_SUCCEEDED is false:
+  SET PERSISTENCE := "Provider update failed" (from "Agent Inference")
+  SET VERIFICATION := "Failed" (from "Agent Inference")
   SET PHASE := "complete" (from "Agent Inference")
-  RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence="Provider update failed", readiness=READINESS, rpiv_status="Not checked", user_choice="No RPIV prompt", verification="Failed"
+  RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence=PERSISTENCE, readiness=READINESS, rpiv_status="Not checked", user_choice="No RPIV prompt", verification=VERIFICATION
 RUN `verify-update`
 IF UPDATE_VERIFIED is false:
+  SET PERSISTENCE := "Provider reported an update" (from "Agent Inference")
+  SET VERIFICATION := "Not verified" (from "Agent Inference")
   SET PHASE := "complete" (from "Agent Inference")
-  RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence="Provider reported an update", readiness=READINESS, rpiv_status="Not checked", user_choice="No RPIV prompt", verification="Not verified"
+  RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence=PERSISTENCE, readiness=READINESS, rpiv_status="Not checked", user_choice="No RPIV prompt", verification=VERIFICATION
 RUN `detect-rpiv`
+SET PERSISTENCE := "Updated" (from "Agent Inference")
+SET VERIFICATION := "Verified by retrieval" (from "Agent Inference")
 SET PHASE := "complete" (from "Agent Inference")
-RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence="Updated", readiness=READINESS, rpiv_status=RPIV_CAPABILITY, user_choice=RPIV_CHOICE, verification="Verified by retrieval"
+RETURN: format="RESULT", details=FINAL_DETAILS, issue_reference=ISSUE_REFERENCE, persistence=PERSISTENCE, readiness=READINESS, rpiv_status=RPIV_CAPABILITY, user_choice=RPIV_CHOICE, verification=VERIFICATION
 </process>
 
 <process id="request-reference" name="Request the issue reference">
@@ -420,8 +437,9 @@ IF READ_CAPABILITY is empty:
   RUN `manual-retrieval`
   RETURN: SOURCE_AVAILABLE
 TRY:
-  USE `provider_issue_read` where: fields=SOURCE_FIELDS, issue_reference=ISSUE_REFERENCE
-  CAPTURE ISSUE_SOURCE from `provider_issue_read`
+  SET READ_COMMAND := <COMMAND> (from "Agent Inference" using READ_CAPABILITY, ISSUE_REFERENCE, SOURCE_FIELDS; build a non-mutating retrieval command for the resolved READ_CAPABILITY)
+  USE `bash` where: command=READ_COMMAND
+  CAPTURE ISSUE_SOURCE from `bash`
   SET SOURCE_AVAILABLE := <VALID_SOURCE> (from "Agent Inference" using ISSUE_SOURCE, ISSUE_REFERENCE)
   SET SOURCE_VERSION := <VERSION> (from "Agent Inference" using ISSUE_SOURCE)
 RECOVER (err):
@@ -467,6 +485,7 @@ IF SUMMARY_CONFIRMED is false:
 SET AMBIGUITIES := <CLASSIFIED_ITEMS> (from "Agent Inference" using ISSUE_SOURCE, USER_SOURCE, INTERPRETATIONS, AMBIGUITY_LENSES, PRIORITY_LEVELS)
 SET PENDING_QUESTIONS := <ORDERED_ITEMS> (from "Agent Inference" using AMBIGUITIES; order blocking, important, optional)
 SET DECISIONS := [] (from "Agent Inference")
+SET CLARIFICATIONS := [] (from "Agent Inference")
 SET ACCEPTED_ASSUMPTIONS := [] (from "Agent Inference")
 SET DEFERRED_QUESTIONS := [] (from "Agent Inference")
 SET UNRESOLVED_BLOCKERS := [] (from "Agent Inference")
@@ -480,6 +499,7 @@ SET QUESTION_PROMPT := <PROMPT> (from "Agent Inference" using format:QUESTION, p
 USE `ask_user` where: question=QUESTION_PROMPT
 CAPTURE CLARIFICATION_RESPONSE from `ask_user`
 SET RESPONSE_KIND := <KIND> (from "Agent Inference" using CLARIFICATION_RESPONSE, CURRENT_AMBIGUITY)
+SET CLARIFICATIONS := CLARIFICATIONS + [<RECORDED_CLARIFICATION>] (from "Agent Inference" using CURRENT_AMBIGUITY, CLARIFICATION_RESPONSE; record the question asked and the user resolution)
 IF RESPONSE_KIND = "decision":
   SET DECISIONS := DECISIONS + [<RECORDED_DECISION>] (from "Agent Inference" using CURRENT_AMBIGUITY, CLARIFICATION_RESPONSE)
 ELSE IF RESPONSE_KIND = "accepted assumption":
@@ -517,7 +537,7 @@ ELSE:
 
 <process id="compose-update" name="Compose the marked alignment update">
 SET REFINED_CRITERIA := <CRITERIA> (from "Agent Inference" using ISSUE_SOURCE, USER_SOURCE, DECISIONS, ACCEPTED_ASSUMPTIONS; preserve source criteria and express refinements separately)
-SET ALIGNMENT_SECTION := <SECTION> (from "Agent Inference" using format:ALIGNMENT_SECTION, adr_requests=ADR_REQUESTS, alignment_end=ALIGNMENT_END, alignment_start=ALIGNMENT_START, assumptions=ACCEPTED_ASSUMPTIONS, clarifications=USER_SOURCE, decisions=DECISIONS, readiness=READINESS, refined_criteria=REFINED_CRITERIA, unresolved_items=[DEFERRED_QUESTIONS, UNRESOLVED_BLOCKERS])
+SET ALIGNMENT_SECTION := <SECTION> (from "Agent Inference" using format:ALIGNMENT_SECTION, adr_requests=ADR_REQUESTS, alignment_end=ALIGNMENT_END, alignment_start=ALIGNMENT_START, assumptions=ACCEPTED_ASSUMPTIONS, clarifications=CLARIFICATIONS, decisions=DECISIONS, readiness=READINESS, refined_criteria=REFINED_CRITERIA, unresolved_items=[DEFERRED_QUESTIONS, UNRESOLVED_BLOCKERS])
 IF MANUAL_MODE is true:
   SET PROPOSED_BODY := ALIGNMENT_SECTION (from "Agent Inference")
   RETURN: PROPOSED_BODY
@@ -542,8 +562,9 @@ SET FINAL_DETAILS := "No provider update capability was available, so persistenc
 
 <process id="persist-update" name="Apply the approved provider update">
 TRY:
-  USE `provider_issue_update` where: expected_version=SOURCE_VERSION, issue_reference=ISSUE_REFERENCE, proposed_body=PROPOSED_BODY
-  CAPTURE UPDATE_RESULT from `provider_issue_update`
+  SET UPDATE_COMMAND := <COMMAND> (from "Agent Inference" using UPDATE_CAPABILITY, ISSUE_REFERENCE, PROPOSED_BODY, SOURCE_VERSION; build a command that updates only the referenced issue body through the resolved UPDATE_CAPABILITY)
+  USE `bash` where: command=UPDATE_COMMAND
+  CAPTURE UPDATE_RESULT from `bash`
   SET UPDATE_SUCCEEDED := <PROVIDER_CONFIRMED> (from "Agent Inference" using UPDATE_RESULT)
   SET FINAL_DETAILS := <UPDATE_SUMMARY> (from "Agent Inference" using UPDATE_RESULT; redact secrets and personal data)
 RECOVER (err):
@@ -553,8 +574,9 @@ RECOVER (err):
 
 <process id="verify-update" name="Verify persistence through fresh retrieval">
 TRY:
-  USE `provider_issue_read` where: fields=SOURCE_FIELDS, issue_reference=ISSUE_REFERENCE
-  CAPTURE VERIFIED_ISSUE_SOURCE from `provider_issue_read`
+  SET VERIFY_COMMAND := <COMMAND> (from "Agent Inference" using READ_CAPABILITY, ISSUE_REFERENCE, SOURCE_FIELDS; build a non-mutating retrieval command for the resolved READ_CAPABILITY)
+  USE `bash` where: command=VERIFY_COMMAND
+  CAPTURE VERIFIED_ISSUE_SOURCE from `bash`
   SET UPDATE_VERIFIED := <MATCHES_PROPOSAL> (from "Agent Inference" using VERIFIED_ISSUE_SOURCE, ALIGNMENT_SECTION, ALIGNMENT_START, ALIGNMENT_END)
   SET FINAL_DETAILS := <VERIFICATION_SUMMARY> (from "Agent Inference" using UPDATE_RESULT, UPDATE_VERIFIED)
 RECOVER (err):
