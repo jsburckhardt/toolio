@@ -22,8 +22,8 @@
     },
     {
       "name": "soft-factory-extras",
-      "description": "Extra Soft Factory agents and skills. Includes the deep-research orchestrator that runs an Exa-powered, Microsoft-preferring research pipeline, and the pr-review-complement skill.",
-      "version": "0.1.0",
+      "description": "Extra Soft Factory agents and skills. Includes the deep-research orchestrator that runs an Exa-powered, Microsoft-preferring research pipeline, the prd-to-gh-issues agent that turns a PRD into a linked GitHub issue backlog, and the pr-review-complement skill.",
+      "version": "0.2.0",
       "source": "plugins/soft-factory-extras"
     },
     {
