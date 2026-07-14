@@ -17,8 +17,9 @@ commands. Agents are authored to the APS v1.0 standard that lives in
 
 ## Plugins
 
-- [soft-factory manifest](plugins/soft-factory/plugin.json): RPIV agents plus bootstrap, onboarding, issue generation, and the APS.
-- [soft-factory-extras manifest](plugins/soft-factory-extras/plugin.json): Extra agents; references a bundled MCP config via `mcpServers`.
+- [soft-factory-agents manifest](plugins/soft-factory-agents/plugin.json): RPIV agents plus bootstrap, onboarding, issue generation, and the APS generator.
+- [soft-factory-skills manifest](plugins/soft-factory-skills/plugin.json): RPIV, bootstrap, onboard-repo, issue-generator, excali, harness-cli-it, and APS skills plus shared templates.
+- [soft-factory-extras manifest](plugins/soft-factory-extras/plugin.json): Extra agents and skills; references a bundled MCP config via `mcpServers`.
 - [deep-research agent](plugins/soft-factory-extras/agents/deep-research.agent.md): Exa-powered, Microsoft-preferring deep-research orchestrator.
 - [soft-factory-extras .mcp.json](plugins/soft-factory-extras/.mcp.json): Exa hosted MCP server (`https://mcp.exa.ai/mcp`).
 - [visual-explainer manifest](plugins/visual-explainer/plugin.json): Self-contained HTML diagrams, reviews, recaps, and slide decks.
@@ -36,10 +37,10 @@ commands. Agents are authored to the APS v1.0 standard that lives in
 
 ## Optional
 
-- [pr-review-complement skill](plugins/soft-factory/skills/pr-review-complement/SKILL.md): PR-review complement skill in soft-factory.
-- [research agent](plugins/soft-factory/agents/research.agent.md): VSCode-format RPIV research-stage agent.
-- [planner agent](plugins/soft-factory/agents/planner.agent.md): RPIV plan-stage agent.
-- [implementer agent](plugins/soft-factory/agents/implementer.agent.md): RPIV implement-stage agent.
-- [verifier agent](plugins/soft-factory/agents/verifier.agent.md): RPIV verify-stage agent.
+- [pr-review-complement skill](plugins/soft-factory-extras/skills/pr-review-complement/SKILL.md): PR-review complement skill in soft-factory-extras.
+- [rpiv-research agent](plugins/soft-factory-agents/agents/rpiv-research.agent.md): RPIV research-stage agent.
+- [rpiv-planner agent](plugins/soft-factory-agents/agents/rpiv-planner.agent.md): RPIV plan-stage agent.
+- [rpiv-implementer agent](plugins/soft-factory-agents/agents/rpiv-implementer.agent.md): RPIV implement-stage agent.
+- [rpiv-verifier agent](plugins/soft-factory-agents/agents/rpiv-verifier.agent.md): RPIV verify-stage agent.
 - [Platform adapters](.github/skills/agnostic-prompt-standard/platforms/README.md): Per-platform adaptor.md files (copilot-cli, vscode-copilot, claude-code, opencode, generic).
 - [session-metrics extension](session-metrics/extension.mjs): In-memory Copilot CLI session token/friction metrics.

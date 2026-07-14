@@ -9,14 +9,20 @@
   },
   "plugins": [
     {
-      "name": "soft-factory",
-      "description": "Soft Factory engineering pipeline: RPIV agents and skills, plus bootstrap, onboarding, issue generation, and the Agnostic Prompt Standard.",
+      "name": "soft-factory-agents",
+      "description": "Soft Factory engineering pipeline agents: RPIV (Research, Plan, Implement, Verify), plus bootstrap, onboarding, issue generation, and the Agnostic Prompt Standard generator.",
+      "version": "0.2.0",
+      "source": "plugins/soft-factory-agents"
+    },
+    {
+      "name": "soft-factory-skills",
+      "description": "Soft Factory skills: RPIV (rpiv, rpiv-research, rpiv-planner, rpiv-implementer, rpiv-verifier) plus bootstrap, onboard-repo, issue-generator, excali, harness-cli-it, and the Agnostic Prompt Standard, with shared templates.",
       "version": "0.1.0",
-      "source": "plugins/soft-factory"
+      "source": "plugins/soft-factory-skills"
     },
     {
       "name": "soft-factory-extras",
-      "description": "Extra Soft Factory agents. Includes the deep-research orchestrator that runs an Exa-powered, Microsoft-preferring research pipeline and writes schema-conformant reports to project/deep-research.",
+      "description": "Extra Soft Factory agents and skills. Includes the deep-research orchestrator that runs an Exa-powered, Microsoft-preferring research pipeline, and the pr-review-complement skill.",
       "version": "0.1.0",
       "source": "plugins/soft-factory-extras"
     },

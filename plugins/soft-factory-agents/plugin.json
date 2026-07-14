@@ -1,0 +1,11 @@
+{
+  "name": "soft-factory-agents",
+  "description": "Soft Factory engineering pipeline agents: RPIV (Research, Plan, Implement, Verify), plus bootstrap, onboarding, issue generation, and the Agnostic Prompt Standard generator.",
+  "version": "0.2.0",
+  "author": {
+    "name": "Juan Burckhardt"
+  },
+  "agents": [
+    "./agents"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "soft-factory-skills",
+  "description": "Soft Factory skills: RPIV (rpiv, rpiv-research, rpiv-planner, rpiv-implementer, rpiv-verifier) plus bootstrap, onboard-repo, issue-generator, excali, harness-cli-it, and the Agnostic Prompt Standard. Includes shared templates.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Juan Burckhardt"
+  },
+  "skills": [
+    "./skills/agnostic-prompt-standard",
+    "./skills/bootstrap",
+    "./skills/excali",
+    "./skills/harness-cli-it",
+    "./skills/issue-generator",
+    "./skills/onboard-repo",
+    "./skills/rpiv",
+    "./skills/rpiv-implementer",
+    "./skills/rpiv-planner",
+    "./skills/rpiv-research",
+    "./skills/rpiv-verifier"
+  ]
+}

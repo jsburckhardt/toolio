@@ -8,5 +8,8 @@
   "agents": [
     "./agents"
   ],
+  "skills": [
+    "./skills/pr-review-complement"
+  ],
   "mcpServers": "./.mcp.json"
 }
