@@ -8,7 +8,7 @@ Reusable Copilot agents, skills, and engineering workflow plugins.
 | --- | --- |
 | `soft-factory-agents` | Soft Factory engineering pipeline agents: RPIV (Research, Plan, Implement, Verify), plus bootstrap, onboarding, issue generation, and the Agnostic Prompt Standard generator. |
 | `soft-factory-skills` | Soft Factory skills: RPIV (`rpiv`, `rpiv-research`, `rpiv-planner`, `rpiv-implementer`, `rpiv-verifier`) plus `bootstrap`, `onboard-repo`, `issue-generator`, `excali`, `harness-cli-it`, and the Agnostic Prompt Standard, with shared templates. |
-| `soft-factory-extras` | Extra Soft Factory agents and skills, including the `deep-research` orchestrator that runs an Exa-powered, Microsoft-preferring research pipeline, and the `pr-review-complement` skill. |
+| `soft-factory-extras` | Extra Soft Factory agents and skills, including the `deep-research` orchestrator that runs an Exa-powered, Microsoft-preferring research pipeline, the `prd-to-gh-issues` agent that turns a PRD into a linked GitHub issue backlog, and the `pr-review-complement` skill. |
 | `visual-explainer` | Generate self-contained HTML pages for diagrams, diff/plan reviews, project recaps, comparison tables, and slide decks. |
 
 ## Layout
@@ -29,7 +29,7 @@ toolio/
     │   └── skills/                 # rpiv*, bootstrap, onboard-repo, issue-generator, excali, agnostic-prompt-standard, templates/
     ├── soft-factory-extras/
     │   ├── plugin.json
-    │   ├── agents/                 # deep-research
+    │   ├── agents/                 # deep-research, issue-aligner, prd-to-gh-issues
     │   └── skills/
     │       └── pr-review-complement/
     └── visual-explainer/
