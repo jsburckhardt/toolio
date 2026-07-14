@@ -31,13 +31,17 @@ toolio/
 │           ├── assets/                # example constants/format blocks
 │           └── _template/             # skill scaffold
 ├── plugins/
-│   ├── soft-factory/
+│   ├── soft-factory-agents/
 │   │   ├── plugin.json
-│   │   ├── agents/                    # RPIV + utility agents (*.agent.md)
-│   │   └── skills/pr-review-complement/
+│   │   └── agents/                    # RPIV + utility agents (*.agent.md)
+│   ├── soft-factory-skills/
+│   │   ├── plugin.json
+│   │   └── skills/                    # rpiv*, bootstrap, onboard-repo, issue-generator,
+│   │                                  #   excali, harness-cli-it, agnostic-prompt-standard, templates/
 │   ├── soft-factory-extras/
 │   │   ├── plugin.json                # references .mcp.json via "mcpServers"
 │   │   ├── agents/deep-research.agent.md
+│   │   ├── skills/pr-review-complement/
 │   │   └── .mcp.json                  # Exa hosted MCP server
 │   └── visual-explainer/
 │       ├── plugin.json
@@ -59,13 +63,14 @@ toolio/
 
 | Plugin | Version | Description |
 | --- | --- | --- |
-| `soft-factory` | 0.1.0 | RPIV (Research, Plan, Implement, Verify) agents and skills, plus bootstrap, onboarding, issue generation, and the Agnostic Prompt Standard. Agents live in `agents/`; skill `pr-review-complement` in `skills/`. |
-| `soft-factory-extras` | 0.1.0 | Extra Soft Factory agents, including the `deep-research` orchestrator that runs an Exa-powered, Microsoft-preferring research pipeline. Bundles its own `.mcp.json` (Exa hosted MCP). |
+| `soft-factory-agents` | 0.2.0 | RPIV (Research, Plan, Implement, Verify) agents, plus bootstrap, onboarding, issue generation, and the Agnostic Prompt Standard generator. Agents live in `agents/`. |
+| `soft-factory-skills` | 0.1.0 | Soft Factory skills: `rpiv`, `rpiv-research`, `rpiv-planner`, `rpiv-implementer`, `rpiv-verifier`, `bootstrap`, `onboard-repo`, `issue-generator`, `excali`, `harness-cli-it`, `agnostic-prompt-standard`, plus shared `templates/`. |
+| `soft-factory-extras` | 0.1.0 | Extra Soft Factory agents and skills, including the `deep-research` orchestrator that runs an Exa-powered, Microsoft-preferring research pipeline (bundles its own `.mcp.json` for the Exa hosted MCP), and the `pr-review-complement` skill. |
 | `visual-explainer` | 0.8.1 | Generate self-contained HTML pages for diagrams, diff/plan reviews, project recaps, comparison tables, and slide decks. Ships slash `commands/` and a `visual-explainer` skill. |
 
-`soft-factory/agents/` contains: `research`, `planner`, `implementer`, `verifier`,
-`justdoit`, `bootstrap`, `onboard-repo`, `issue-generator`, `harness-cli-it`,
-`excali`, and `aps-v1.2.2`.
+`soft-factory-agents/agents/` contains: `rpiv-research`, `rpiv-planner`, `rpiv-implementer`,
+`rpiv-verifier`, `rpiv`, `bootstrap`, `onboard-repo`, `issue-generator`,
+`harness-cli-it`, `excali`, and `aps-v1.2.2`.
 
 ## Conventions & rules
 
@@ -103,7 +108,7 @@ toolio/
 - NEVER use `read` or `write` as tool names — they are permission categories.
   Use `view` (read), `create` (new file), or `edit` (modify) instead.
 - VSCode-format agents may instead use qualified names (e.g. `search/codebase`,
-  `execute/runInTerminal`), as `soft-factory/agents/research.agent.md` does.
+  `execute/runInTerminal`), as `soft-factory-agents/agents/rpiv-research.agent.md` does.
 
 ### MCP servers
 
