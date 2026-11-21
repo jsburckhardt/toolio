@@ -4,20 +4,29 @@ description: "Turn agreed acceptance into demonstrable vertical slices with expl
 metadata:
   author: "Soft Factory maintainers"
   spec_version: "1.0"
-  framework_revision: "0.1.0"
-  last_updated: "2026-11-21"
 ---
 
 # Factory slice
 
-Create independently useful outcomes before considering parallel workers. Read the
-reference and extend the agreed work brief without inventing horizontal execution phases.
+Create demonstrable vertical outcomes first; consider parallel execution second.
+
+1. Start from agreed ACs/design. The first slice proves a thin integrated path across
+   necessary layers, not all database work followed by all backend and UI work.
+2. In the existing work brief, record each task's outcome, ACs, contracts, actual
+   prerequisites, write scope, shared-file owner, runtime resources and checks.
+   Reject missing prerequisites and cycles; list order is not a dependency.
+3. Keep one delivery issue/integration branch/final PR. Worker branches are internal
+   tasks. Split oversized initiatives into useful delivery issues, not giant PRs.
+4. Parallelise only ready tasks with stable contracts, disjoint writes and separable
+   ports/databases/output directories. Initially allow at most two implementers.
+   Shared files have one owner; uncertainty or shared-file churn favours sequential work.
+5. Unlock dependants only after reviewed prerequisites integrate and pass combined
+   checks. Do not create horizontal tasks merely to keep workers occupied.
 
 ## References
 
-1. [Vertical slicing](references/00-vertical-slicing.md)
+Continue with `soft-factory-v2:factory-deliver` after agreement.
 
 ## Skill layout
 
-- `SKILL.md`: entry point.
-- `references/00-vertical-slicing.md`: outcomes, dependencies and dispatch snapshot.
+- `SKILL.md`: self-contained instructions.

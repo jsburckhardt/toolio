@@ -43,10 +43,6 @@ toolio/
 │   │   ├── agents/deep-research.agent.md
 │   │   ├── skills/pr-review-complement/
 │   │   └── .mcp.json                  # Exa hosted MCP server
-│   ├── soft-factory-v2/
-│   │   ├── plugin.json                # Opt-in v2; v1 remains unchanged
-│   │   ├── README.md                  # Installation, environment and pilot limits
-│   │   └── skills/                    # factory-* skills; deliver includes lifecycle helper
 │   └── visual-explainer/
 │       ├── plugin.json
 │       ├── commands/                  # slash commands (*.md)
@@ -69,7 +65,6 @@ toolio/
 | --- | --- | --- |
 | `soft-factory-agents` | 0.2.0 | RPIV (Research, Plan, Implement, Verify) agents, plus bootstrap, onboarding, issue generation, and the Agnostic Prompt Standard generator. Agents live in `agents/`. |
 | `soft-factory-skills` | 0.1.0 | Soft Factory skills: `rpiv`, `rpiv-research`, `rpiv-planner`, `rpiv-implementer`, `rpiv-verifier`, `bootstrap`, `onboard-repo`, `issue-generator`, `excali`, `harness-cli-it`, `agnostic-prompt-standard`, plus shared `templates/`. |
-| `soft-factory-v2` | 0.1.0 | Opt-in `factory-onboard`, `factory-align`, `factory-design`, `factory-slice`, `factory-spike`, `factory-deliver`, and `factory-accept`; Node lifecycle helper, no dedicated stage agents. |
 | `soft-factory-extras` | 0.1.0 | Extra Soft Factory agents and skills, including the `deep-research` orchestrator that runs an Exa-powered, Microsoft-preferring research pipeline (bundles its own `.mcp.json` for the Exa hosted MCP), and the `pr-review-complement` skill. |
 | `visual-explainer` | 0.8.1 | Generate self-contained HTML pages for diagrams, diff/plan reviews, project recaps, comparison tables, and slide decks. Ships slash `commands/` and a `visual-explainer` skill. |
 
@@ -139,9 +134,6 @@ toolio/
 
 ## Validation / checks
 
-- Run `just verify` for manifest/skill/link validation, Node syntax and v2 lifecycle integration tests.
-- V2 uses Node.js 20+ built-ins only; do not install npm packages for its checks.
-- Preserve v1 plugins when changing v2; real-product pilot readiness must not be inferred from fixture tests.
 - `plugin.json` and every `.mcp.json` must be valid JSON
   (e.g. `python -c 'import json,sys; json.load(open(sys.argv[1]))' <file>`).
 - Agents pass APS lint: correct section order, tag-newline rule, no tabs,

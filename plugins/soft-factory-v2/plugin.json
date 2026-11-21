@@ -1,6 +1,6 @@
 {
   "name": "soft-factory-v2",
-  "description": "Opt-in skill-based delivery: alignment, deep-module design, vertical slices, approved spikes, TDD worktree workers and independent acceptance.",
+  "description": "Seven self-contained delivery skills: onboarding, alignment, design, slicing, spikes, delivery and independent acceptance.",
   "version": "0.1.0",
   "author": { "name": "Juan Burckhardt" },
   "skills": [
