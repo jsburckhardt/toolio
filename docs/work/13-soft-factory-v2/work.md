@@ -1,7 +1,7 @@
 # Issue 13: Soft Factory v2 delivery plugin
 
 Issue: https://github.com/jsburckhardt/toolio/issues/13
-Branch: `feat/soft-factory-v2`. Status: ready for independent review.
+Branch: `feat/soft-factory-v2`. Status: independently reviewed; PR publication.
 
 ## Scope and decisions
 
@@ -46,7 +46,14 @@ capability to demonstrate in fixtures and the later pilot, not forced on this is
 - A read-only `copilot --plugin-dir <v2> --deny-tool shell --deny-tool write -p ...`
   invoked `soft-factory-v2:factory-design`, read its reference and returned its rules.
 - V1 plugin paths have no diff. No npm packages were installed.
-- Independent verdict and exact reviewed implementation SHA will be recorded before PR.
+- Corrected implementation SHA: `7a2c361aa8fcbcc0830212366c9a327d36207c36`.
+- Independent correction review: PASS; both reported defects resolved, nine integration
+  tests passed, no significant tightly coupled regressions found. Original full-diff
+  review identified only those two defects.
+- Both implementation commits have valid locally verified SSH signatures (`G`).
+- A subsequent metadata-only commit updates this work brief; distinguish its publication
+  head from the reviewed implementation SHA. GitHub signature verification and CI are
+  publication checks, not a claim that the live product pilot has completed.
 
 ## Independent review corrections
 
@@ -55,7 +62,8 @@ worker cancellation could leave subprocesses alive while clearing dispatch guard
 and final acceptance could skip a revised combined validation command. Regression
 integration tests reproduced both before correction. The helper now accounts for
 Linux worker process groups, preserves live-remnant gates, and executes the current
-combined check during final acceptance. Corrected commit requires renewed review.
+combined check during final acceptance. Renewed independent review passed at the
+implementation SHA above.
 
 ## Environment and limitations
 
