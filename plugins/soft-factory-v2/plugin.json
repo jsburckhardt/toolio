@@ -1,0 +1,15 @@
+{
+  "name": "soft-factory-v2",
+  "description": "Opt-in skill-based delivery: alignment, deep-module design, vertical slices, approved spikes, TDD worktree workers and independent acceptance.",
+  "version": "0.1.0",
+  "author": { "name": "Juan Burckhardt" },
+  "skills": [
+    "./skills/factory-onboard",
+    "./skills/factory-align",
+    "./skills/factory-design",
+    "./skills/factory-slice",
+    "./skills/factory-spike",
+    "./skills/factory-deliver",
+    "./skills/factory-accept"
+  ]
+}

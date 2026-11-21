@@ -27,6 +27,12 @@
       "source": "plugins/soft-factory-extras"
     },
     {
+      "name": "soft-factory-v2",
+      "description": "Opt-in skill-based delivery with alignment, deep-module design, approved spikes, TDD worktree workers and independent acceptance.",
+      "version": "0.1.0",
+      "source": "plugins/soft-factory-v2"
+    },
+    {
       "name": "visual-explainer",
       "description": "Generate self-contained HTML pages for diagrams, diff/plan reviews, project recaps, comparison tables, and slide decks.",
       "version": "0.8.1",

@@ -12,6 +12,9 @@
             "installOhMyZshConfig": true
         },
         "ghcr.io/devcontainers/features/docker-outside-of-docker": {},
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "22"
+        },
         // "ghcr.io/devcontainers/features/python": {},
         // "ghcr.io/devcontainers/features/node": {
             // "version": "lts"

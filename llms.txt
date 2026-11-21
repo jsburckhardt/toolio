@@ -19,6 +19,12 @@ commands. Agents are authored to the APS v1.0 standard that lives in
 
 - [soft-factory-agents manifest](plugins/soft-factory-agents/plugin.json): RPIV agents plus bootstrap, onboarding, issue generation, and the APS generator.
 - [soft-factory-skills manifest](plugins/soft-factory-skills/plugin.json): RPIV, bootstrap, onboard-repo, issue-generator, excali, harness-cli-it, and APS skills plus shared templates.
+- [soft-factory-v2 manifest](plugins/soft-factory-v2/plugin.json): Opt-in skill-based delivery; preserves v1.
+- [soft-factory-v2 guide](plugins/soft-factory-v2/README.md): Skills, repository enablement, upgrades, execution and pilot boundaries.
+- [V2 delivery contract](plugins/soft-factory-v2/skills/factory-deliver/references/00-delivery.md): TDD workers, result formats, serial integration, independent acceptance and recovery.
+- [V2 architecture decision](docs/architecture/adrs/ADR-20261121-skill-based-delivery.md): Scope, ownership and reasons for a separate plugin/minimal helper.
+- [V2 delivery core component](docs/architecture/core-components/CC-v2-delivery.md): Paths, interface and tested invariants.
+- [V2 work brief](docs/work/13-soft-factory-v2/work.md): Issue acceptance, decisions and delivery evidence.
 - [soft-factory-extras manifest](plugins/soft-factory-extras/plugin.json): Extra agents and skills; references a bundled MCP config via `mcpServers`.
 - [deep-research agent](plugins/soft-factory-extras/agents/deep-research.agent.md): Exa-powered, Microsoft-preferring deep-research orchestrator.
 - [soft-factory-extras .mcp.json](plugins/soft-factory-extras/.mcp.json): Exa hosted MCP server (`https://mcp.exa.ai/mcp`).
