@@ -39,6 +39,10 @@ const git = (...args) => cp.execFileSync('git', args, { encoding: 'utf8' }).trim
 (async () => {
   if (c.mode === 'implement') {
     const instructions = JSON.parse(c.task.instructions);
+    if (instructions.descendant) {
+      const descendant = cp.spawn(process.execPath, ['-e', 'process.on("SIGTERM", () => {}); require("node:fs").writeFileSync(process.argv[1], "ready"); setInterval(() => {}, 1000)', c.root + '/.trees/descendant.ready'], { stdio: 'ignore' });
+      fs.writeFileSync(c.root + '/.trees/descendant.pid', String(descendant.pid));
+    }
     if (instructions.wait) {
       while (!fs.existsSync(c.root + '/.trees/release')) await new Promise(r => setTimeout(r, 20));
     }
@@ -198,14 +202,22 @@ test('changed reviewed head, dirty work and new final commits invalidate accepta
 });
 
 test('interrupted worker is preserved and cannot be recovered while its process is live', async t => {
-  const f = fixture(t, [task('T1', 'a.txt', 'AC-1', [], { wait: true })]);
+  const f = fixture(t, [task('T1', 'a.txt', 'AC-1', [], { wait: true, descendant: true })]);
+  const descendantFile = join(f.root, '.trees/descendant.pid');
+  const executing = pid => {
+    try { return readFileSync(`/proc/${pid}/stat`, 'utf8').split(') ')[1].split(' ')[0] !== 'Z'; }
+    catch { return false; }
+  };
   const running = f.start('T1');
   running.done.catch(() => {});
-  await waitFor(() => f.state().tasks[0].childPid);
+  await waitFor(() => existsSync(join(f.root, '.trees/descendant.ready')));
+  const descendantPid = Number(readFileSync(descendantFile, 'utf8'));
+  t.after(() => { if (executing(descendantPid)) process.kill(descendantPid, 'SIGKILL'); });
   f.fail(['recover', 'T1'], /live|running/);
   f.fail(['handoff', 'next-lead'], /live|running/);
   running.child.kill('SIGTERM');
   await waitFor(() => f.state().tasks[0].status !== 'running');
+  assert.equal(executing(descendantPid), false, 'Cancellation must stop the worker descendant before allowing redispatch');
   assert.equal(existsSync(join(f.root, '.trees/T1')), true);
   f.fail(['cleanup', 'T1'], /integrated/);
   f.ok('handoff', 'next-lead');
@@ -251,4 +263,18 @@ test('approved plan revisions preserve unfinished work, invalidate review and re
   revised.tasks[0].dependsOn = ['T2'];
   writeFileSync(snapshot, JSON.stringify(revised));
   f.fail(['update-plan', snapshot], /Cyclic/);
+});
+
+test('acceptance executes a revised combined check after tasks are already integrated', t => {
+  const f = fixture(t, [task('T1', 'a.txt', 'AC-1')]);
+  f.ok('run', 'T1');
+  f.ok('review', 'T1');
+  f.ok('integrate', 'T1');
+  const revised = JSON.parse(readFileSync(join(f.root, 'plan.json'), 'utf8'));
+  revised.combinedCheck = ['node', '-e', 'process.exit(7)'];
+  const snapshot = join(f.root, '.fixture-plan.json');
+  writeFileSync(snapshot, JSON.stringify(revised));
+  f.ok('update-plan', snapshot);
+  f.fail(['accept'], /check failed/);
+  assert.equal(f.state().acceptedSha, null);
 });

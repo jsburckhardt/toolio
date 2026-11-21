@@ -20,7 +20,9 @@ accept. Root validation recipes exercise this plugin alongside marketplace contr
 - Serial merges run combined checks; failed/busy integration gates dispatch.
 - Conflict fixes require committed clean state and independent repair review.
 - Final acceptance requires all tasks integrated and the exact current clean head.
-- Interrupted/live work is not redispatched or deleted implicitly. Cleanup removes
+- Interrupted/live work and inheriting process-group descendants are not redispatched
+  or deleted implicitly. Final acceptance runs the current validation command as well
+  as full checks, not an obsolete command revision. Cleanup removes
   only known, integrated clean worktrees; reports/history remain.
 
 Role rules and reported evidence are not mechanically enforced trust boundaries.
@@ -35,6 +37,6 @@ Pocket API semantics. Local plugin discovery and an independent change review ar
 additional checks. The real collector pilot must exercise actual delivery before
 calling the complete v2 workflow production-proven.
 
-Node.js 20+, git, Copilot and actual project just recipes are prerequisites. The helper
+Linux, Node.js 20+, git, Copilot and actual project just recipes are prerequisites. The helper
 uses `.trees/` locally; runtime logs/reports must not contain secrets or private data.
 No npm/runtime application dependencies or MCP servers are added by this component.

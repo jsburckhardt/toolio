@@ -30,7 +30,7 @@ You SHOULD reuse existing commands and describe uncovered checks honestly.
 
 The existing devcontainer is the environment; you MUST NOT repeatedly request
 container-entry steps or require a separate container per worker. You MUST verify
-Node.js 20+, git, Copilot and just availability, `.trees/` git metadata visibility,
+Linux, Node.js 20+, git, Copilot and just availability, `.trees/` git metadata visibility,
 and separation of task-specific runtime resources. Worktrees MUST be excluded from
 tracked content and ordinary source discovery. You MUST NOT claim hard worker isolation.
 

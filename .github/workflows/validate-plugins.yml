@@ -16,6 +16,5 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
-      - run: node plugins/soft-factory-v2/tests/validate.mjs
-      - run: node --check plugins/soft-factory-v2/skills/factory-deliver/scripts/worktrees.mjs
-      - run: node --test plugins/soft-factory-v2/tests/worktrees.test.mjs
+      - run: sudo -A apt-get update -qq && sudo -A apt-get install --yes --no-install-recommends just
+      - run: just verify

@@ -57,7 +57,7 @@ copilot --plugin-dir /absolute/path/to/toolio/plugins/soft-factory-v2 skill list
 
 ## Environment and execution
 
-Work inside the existing devcontainer. Node.js 20+, git, Copilot CLI and real project
+Work inside the existing Linux devcontainer. Node.js 20+, git, Copilot CLI and real project
 `just` recipes must be available. Separate workers share that environment; worktrees
 under `.trees/` do not provide security isolation. Ports/databases/output directories
 must be task-specific where necessary. `--yolo` grants all CLI permissions.
@@ -68,7 +68,10 @@ Use the helper through the absolute path resolved from the loaded delivery skill
 node /absolute/plugin/path/skills/factory-deliver/scripts/worktrees.mjs status
 ```
 
-The helper is a small foreground lifecycle tool, not a daemon or scheduler. A lead
+The helper is a small foreground lifecycle tool, not a daemon or scheduler. It awaits
+each CLI worker in a private process group, accounts for inheriting subprocesses and
+retains the dispatch gate if they remain alive. Workers must not daemonise/detach
+processes to escape that group. A lead
 starts bounded `run`/`review` commands using the CLI's background-command facility
 and continues independent work. The commands stay alive until their worker exits.
 See the delivery reference for commands, task plans, recovery and acceptance.

@@ -7,7 +7,7 @@ not authorise changes. You MUST reconcile git branch/head, dirty state, issue/PR
 active worker processes and last acceptance evidence before acting. Chat summaries
 are supporting context, not current authority. Exactly one lead owns this delivery.
 
-You MUST work in the existing devcontainer; workers share it. You MUST NOT provision
+You MUST work in the existing Linux devcontainer; workers share it. You MUST NOT provision
 per-worker containers or claim worktrees isolate credentials/processes. Use `.trees/`
 for workers, with separate ports/databases/generated outputs when required.
 You MUST verify actual identity/signing, tools and project checks through onboarding.
@@ -84,6 +84,10 @@ commands until their separate worker exits. The lead MAY start two independent `
 commands through the CLI background-command facility and continue other useful work.
 The helper caps implementers at two and rejects active overlapping write scopes.
 You MUST NOT force parallelism or detach services just to wait for bounded work.
+The helper awaits a private worker process group; it is not an independent service.
+Workers MUST NOT daemonise/detach subprocesses. Cancellation signals the known group,
+allows graceful exit, then terminates remaining inheriting processes. Live remnants
+retain a `stopping`/busy gate until inspected and recovered, never silently redispatched.
 
 ## Evidence and integration
 
@@ -111,7 +115,9 @@ A prerequisite unlocks only after that integration passes. A failed task blocks 
 dependants, not unrelated ready work. Broken/busy integration blocks all new dispatch.
 
 For final acceptance, all tasks MUST be integrated. `accept` starts a separate final
-review context and reruns `just verify`; an exact-SHA passing verdict is required.
+review context and runs both the current approved combined check and `just verify`
+(once when they are identical); an exact-SHA passing verdict is required. Updating
+a validation command invalidates earlier acceptance even if implementation is unchanged.
 Final review focuses on combined effects/ACs and relevant reruns, not mandatory
 duplicate line-by-line review of unchanged task code. Changed integration code MUST
 receive independent review. Any later implementation commit/dirty state invalidates
@@ -123,6 +129,9 @@ or prerequisites resolve; do not weaken them to produce a pass.
 Inspect `status` and local `.trees/results/` context/report/log files before retrying.
 The ledger records owner, base/head SHAs, tasks, live PIDs and plugin/helper provenance.
 You MUST NOT relaunch a live worker or assume a lost session means it stopped.
+Recorded process-group liveness includes surviving inheriting descendants, not only
+the CLI PID. Escaped/daemonised processes are outside this coordination model and
+are forbidden by the worker contract; this is not a hard security sandbox.
 
 | Command | Use |
 |---|---|

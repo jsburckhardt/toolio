@@ -38,15 +38,24 @@ capability to demonstrate in fixtures and the later pilot, not forced on this is
 
 - Initial integration test failed because the worktree helper did not exist.
 - `just doctor`: repository-local identity/signing configuration and required local tools checked.
-- `just verify`: marketplace/skill/link validation, Node syntax and eight integration
+- `just verify`: marketplace/skill/link validation, Node syntax and nine integration
   scenarios pass, including concurrent workers, scope/capacity/ownership, stale review,
   integration check failure, changed heads, interrupted work, real merge conflicts,
-  snapshot revision and completed-delivery archival.
+  snapshot revision, completed-delivery archival and revised-validation acceptance.
 - `copilot --plugin-dir <v2> skill list`: all seven plugin skills discovered without installation.
 - A read-only `copilot --plugin-dir <v2> --deny-tool shell --deny-tool write -p ...`
   invoked `soft-factory-v2:factory-design`, read its reference and returned its rules.
 - V1 plugin paths have no diff. No npm packages were installed.
 - Independent verdict and exact reviewed implementation SHA will be recorded before PR.
+
+## Independent review corrections
+
+Review of `297cae7a782a148be59775d14490fd61d4fcad1e` found two meaningful defects:
+worker cancellation could leave subprocesses alive while clearing dispatch guards,
+and final acceptance could skip a revised combined validation command. Regression
+integration tests reproduced both before correction. The helper now accounts for
+Linux worker process groups, preserves live-remnant gates, and executes the current
+combined check during final acceptance. Corrected commit requires renewed review.
 
 ## Environment and limitations
 

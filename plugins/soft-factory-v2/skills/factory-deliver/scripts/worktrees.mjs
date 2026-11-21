@@ -1,7 +1,7 @@
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync, renameSync, unlinkSync,
-  rmdirSync, openSync, closeSync, lstatSync } from 'node:fs';
+  rmdirSync, openSync, closeSync, lstatSync, readdirSync } from 'node:fs';
 import { resolve, join, dirname, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -26,8 +26,30 @@ const alive = pid => {
   if (!Number.isInteger(pid) || pid < 1) return false;
   try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; }
 };
-const live = job => alive(job?.runnerPid) || alive(job?.childPid);
-const active = task => ['running', 'reviewing'].includes(task.status);
+const groupAlive = pid => {
+  if (!Number.isInteger(pid) || pid < 1) return false;
+  try { process.kill(-pid, 0); } catch (e) { return e.code === 'EPERM'; }
+  // Reparented zombies cannot execute work and must not permanently block recovery.
+  for (const entry of readdirSync('/proc')) {
+    if (!/^\d+$/.test(entry)) continue;
+    try {
+      const stat = readFileSync(`/proc/${entry}/stat`, 'utf8');
+      const fields = stat.slice(stat.lastIndexOf(')') + 2).split(' ');
+      if (Number(fields[2]) === pid && fields[0] !== 'Z') return true;
+    } catch (e) { if (!['ENOENT', 'ESRCH', 'EACCES'].includes(e.code)) throw e; }
+  }
+  return false;
+};
+const signalGroup = (pid, signal) => {
+  if (!pid) return;
+  try { process.kill(-pid, signal); } catch (e) { if (e.code !== 'ESRCH') throw e; }
+};
+const waitGroup = async (pid, milliseconds) => {
+  const until = Date.now() + milliseconds;
+  while (groupAlive(pid) && Date.now() < until) await new Promise(r => setTimeout(r, 25));
+};
+const live = job => alive(job?.runnerPid) || alive(job?.childPid) || groupAlive(job?.groupPid);
+const active = task => ['running', 'reviewing', 'stopping'].includes(task.status);
 const safePath = path => typeof path === 'string' && path && !isAbsolute(path)
   && !path.split('/').some(part => ['.', '..', '.git', '.trees', ''].includes(part)) && !path.includes('\\');
 const scopePath = path => typeof path === 'string' && safePath(path.endsWith('/') ? path.slice(0, -1) : path);
@@ -116,6 +138,7 @@ function integrationReady(state) {
 }
 
 async function copilot(context, updatePid) {
+  ensure(process.platform === 'linux', 'Worktree workers require the existing Linux devcontainer');
   const contextPath = join(trees, 'results', `${context.label}-context.json`);
   const logPath = join(trees, 'results', `${context.label}.log`);
   atomic(contextPath, context);
@@ -126,14 +149,23 @@ async function copilot(context, updatePid) {
       ? 'You are an implementer, not the lead. Use observed TDD for suitable behaviour, obey scope, update affected docs, run checks and commit. Do not launch workers, merge, push or release. Escalate consequential decisions in your report. '
       : 'You are an independent reviewer. Inspect the exact diff, design and standards; reproduce decisive evidence. Do not repair application code, commit, dispatch, merge, push or release. Write only the assigned report. ')
     + `Read the canonical brief ${context.brief}. Write the required JSON report to ${context.output}. `
-    + 'Do not modify the execution ledger or other worktrees. These paths are local; do not send their content to external services.';
+    + 'Do not modify the execution ledger or other worktrees. Do not daemonise/detach subprocesses or leave services running when you finish. '
+    + 'These paths are local; do not send their content to external services.';
   const fd = openSync(logPath, 'w');
   const child = spawn(process.env.FACTORY_COPILOT || 'copilot', ['--plugin-dir', plugin, '--yolo', '-p', prompt], {
     cwd: context.cwd, env: { ...process.env, FACTORY_CONTEXT: contextPath }, stdio: ['ignore', fd, fd],
+    // A private process group is still awaited by this foreground helper; it is not a daemon.
+    detached: true,
   });
   closeSync(fd);
   let interrupted = false;
-  const stop = () => { interrupted = true; child.kill('SIGTERM'); };
+  let forceStop;
+  const stop = () => {
+    if (interrupted) return;
+    interrupted = true;
+    signalGroup(child.pid, 'SIGTERM');
+    forceStop = setTimeout(() => signalGroup(child.pid, 'SIGKILL'), 1000);
+  };
   process.on('SIGINT', stop);
   process.on('SIGTERM', stop);
   try {
@@ -144,9 +176,18 @@ async function copilot(context, updatePid) {
       if (child.pid) updatePid(child.pid);
     });
   } finally {
+    if (interrupted) {
+      await waitGroup(child.pid, 2000);
+      if (groupAlive(child.pid)) {
+        signalGroup(child.pid, 'SIGKILL');
+        await waitGroup(child.pid, 1000);
+      }
+    }
+    clearTimeout(forceStop);
     process.removeListener('SIGINT', stop);
     process.removeListener('SIGTERM', stop);
   }
+  ensure(!groupAlive(child.pid), 'Worker descendants remain live; preserve the dispatch gate until they stop');
   ensure(existsSync(context.output), 'Worker exited without an evidence report');
   return json(context.output);
 }
@@ -156,7 +197,7 @@ async function worker(id, review) {
   locked(state => {
     integrationReady(state);
     const task = taskById(state, id);
-    ensure(!active(task) && task.status !== 'integrated', 'Task already running or integrated');
+    ensure(!active(task) && !live(task) && task.status !== 'integrated', 'Task already running or integrated');
     ensure(task.dependsOn.every(dep => taskById(state, dep).status === 'integrated'), 'Task prerequisite is not integrated');
     if (!review) {
       ensure(state.tasks.filter(t => t.status === 'running').length < 2, 'Capacity is two implementers');
@@ -176,6 +217,7 @@ async function worker(id, review) {
     task.status = review ? 'reviewing' : 'running';
     task.runnerPid = process.pid;
     task.childPid = null;
+    task.groupPid = null;
     task.reviewSha = null;
     state.acceptedSha = null;
     context = { mode: review ? 'task' : 'implement', label: `${id}-${review ? 'review' : 'implementation'}`,
@@ -184,7 +226,10 @@ async function worker(id, review) {
       output: join(trees, 'results', `${id}-${review ? 'review' : 'implementation'}.json`) };
   });
   try {
-    const report = await copilot(context, pid => locked(s => { taskById(s, id).childPid = pid; }));
+    const report = await copilot(context, pid => locked(s => {
+      taskById(s, id).childPid = pid;
+      taskById(s, id).groupPid = pid;
+    }));
     locked(state => {
       const task = taskById(state, id);
       const sha = taskHead(task);
@@ -195,15 +240,20 @@ async function worker(id, review) {
       task.reviewSha = review ? sha : null;
       task.runnerPid = null;
       task.childPid = null;
+      task.groupPid = null;
       task.lastError = null;
     });
   } catch (error) {
     locked(state => {
       const task = taskById(state, id);
-      task.status = review ? 'implemented' : 'blocked';
+      const outstanding = groupAlive(task.groupPid);
+      task.status = outstanding ? 'stopping' : (review ? 'implemented' : 'blocked');
       task.reviewSha = null;
       task.runnerPid = null;
-      task.childPid = null;
+      if (!outstanding) {
+        task.childPid = null;
+        task.groupPid = null;
+      }
       task.lastError = error.message;
     });
     throw error;
@@ -220,18 +270,25 @@ async function reviewIntegration(repair) {
       integrationReady(state);
       ensure(state.tasks.every(t => t.status === 'integrated'), 'All tasks must be integrated before final acceptance');
     }
-    state.finalJob = { runnerPid: process.pid, childPid: null };
+    state.finalJob = { runnerPid: process.pid, childPid: null, groupPid: null };
     state.acceptedSha = null;
     context = { mode: repair ? 'repair' : 'final', label: repair ? 'repair' : 'final', root, cwd: root,
       brief: state.brief, acs: repair ? [...new Set(state.tasks.filter(t => t.status === 'integrated'
         || t.id === state.failedTask).flatMap(t => t.acs))] : state.acs,
       baseSha: repair ? state.integrationSha : state.baseSha,
+      combinedCheck: state.combinedCheck,
       expectedSha: head(), output: join(trees, 'results', `${repair ? 'repair' : 'final'}-review.json`) };
   });
   try {
-    const report = await copilot(context, pid => locked(s => { s.finalJob.childPid = pid; }));
+    const report = await copilot(context, pid => locked(s => {
+      s.finalJob.childPid = pid;
+      s.finalJob.groupPid = pid;
+    }));
     const state = json(stateFile);
-    run(repair ? state.combinedCheck[0] : 'just', repair ? state.combinedCheck.slice(1) : ['verify'], root);
+    run(state.combinedCheck[0], state.combinedCheck.slice(1), root);
+    if (!repair && JSON.stringify(state.combinedCheck) !== JSON.stringify(['just', 'verify'])) {
+      run('just', ['verify'], root);
+    }
     locked(s => {
       clean(root);
       ensure(head() === context.expectedSha, 'Integration SHA changed during acceptance');
@@ -251,7 +308,11 @@ async function reviewIntegration(repair) {
       s.finalJob = null;
     });
   } catch (error) {
-    locked(s => { s.finalJob = null; s.acceptedSha = null; });
+    locked(s => {
+      if (groupAlive(s.finalJob?.groupPid)) s.finalJob.runnerPid = null;
+      else s.finalJob = null;
+      s.acceptedSha = null;
+    });
     throw error;
   }
 }
@@ -407,6 +468,7 @@ async function main() {
     task.reviewSha = null;
     task.runnerPid = null;
     task.childPid = null;
+    task.groupPid = null;
     task.lastError = 'Interrupted; inspect preserved work before retry';
   });
   if (command === 'recover-integration') return locked(state => {
