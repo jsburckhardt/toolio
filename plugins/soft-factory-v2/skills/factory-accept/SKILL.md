@@ -22,9 +22,9 @@ commit, dispatch workers, merge, push or release.
 4. Report actual command/results and an evidence-backed decision for every relevant
    AC. Missing access or subjective owner evaluation remains blocked, not passed.
    Reject unresolved blocker/major defects; keep meaningful minor findings visible.
-5. Return verdict, exact reviewed SHA and findings with severity, location, suggested
-   fix and design/implementation owner in the existing review/work record or requested
-   handoff. Do not create a new report hierarchy or mandatory JSON schema.
+5. Return the verdict using
+   [format-acceptance-verdict](assets/formats/format-acceptance-verdict-v1.0.0.example.md)
+   in the existing review/work record or requested handoff.
 6. Route defects to their owner. After two unsuccessful corrections of the same
    finding, request an owner decision. A later code change invalidates affected evidence.
    Acceptance permits PR creation under the agreed go, not implicit merge/release.
@@ -36,4 +36,5 @@ Use `soft-factory-v2:factory-design`; return findings to
 
 ## Skill layout
 
-- `SKILL.md`: self-contained instructions.
+- `SKILL.md`: instructions.
+- `assets/formats/format-acceptance-verdict-v1.0.0.example.md`: ACCEPTANCE_VERDICT_V1 contract.

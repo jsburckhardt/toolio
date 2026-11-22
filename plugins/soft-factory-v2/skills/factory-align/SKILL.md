@@ -20,8 +20,9 @@ Reach shared understanding before implementation, rather than eagerly generating
    public contracts, constraints and decisive evidence. Involve the actual owner for
    domain decisions. Request an approved spike for material experimental uncertainty.
 4. Capture commitments, rationale, owner answers and delegated choices in one
-   issue-linked work brief, using the repository's conventions. Preserve existing
-   records; do not duplicate facts across mandatory stage documents.
+   issue-linked work brief using
+   [format-work-brief](assets/formats/format-work-brief-v1.0.0.example.md), in the
+   repository's existing work-record location. Do not duplicate facts across documents.
 5. Confirm shared understanding and delivery go. A question is not authorisation to
    edit/create/install. After go, routine implementation is autonomous; consequential
    behaviour, contract, dependency, cost or privacy changes return to alignment.
@@ -33,4 +34,5 @@ then `soft-factory-v2:factory-slice`.
 
 ## Skill layout
 
-- `SKILL.md`: self-contained instructions.
+- `SKILL.md`: instructions.
+- `assets/formats/format-work-brief-v1.0.0.example.md`: WORK_BRIEF_V1 contract.

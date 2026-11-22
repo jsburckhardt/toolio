@@ -12,8 +12,8 @@ Create demonstrable vertical outcomes first; consider parallel execution second.
 
 1. Start from agreed ACs/design. The first slice proves a thin integrated path across
    necessary layers, not all database work followed by all backend and UI work.
-2. In the existing work brief, record each task's outcome, ACs, contracts, actual
-   prerequisites, write scope, shared-file owner, runtime resources and checks.
+2. Under the brief's `## Tasks`, record each task using
+   [format-slice-task](assets/formats/format-slice-task-v1.0.0.example.md).
    Reject missing prerequisites and cycles; list order is not a dependency.
 3. Keep one delivery issue/integration branch/final PR. Worker branches are internal
    tasks. Split oversized initiatives into useful delivery issues, not giant PRs.
@@ -29,4 +29,5 @@ Continue with `soft-factory-v2:factory-deliver` after agreement.
 
 ## Skill layout
 
-- `SKILL.md`: self-contained instructions.
+- `SKILL.md`: instructions.
+- `assets/formats/format-slice-task-v1.0.0.example.md`: SLICE_TASK_V1 contract.

@@ -19,10 +19,8 @@ Routine code/documentation lookup is research, not a spike.
    limitations without exposing secrets or private data.
 3. At the bound, stop and report unanswered questions. Any extension needs approval;
    do not silently expand the experiment or promote it to production.
-4. Write `docs/spikes/<date>-<slug>.md` with these sections:
-   Question and decision; Approval and bounds; Evidence; Options and tradeoffs;
-   Recommendation; Exit conditions/results; Unresolved questions and proposed delivery
-   ACs/follow-ups; Experimental artifacts and disposition.
+4. Write `docs/spikes/<date>-<slug>.md` using
+   [format-spike-report](assets/formats/format-spike-report-v1.0.0.example.md).
 5. A useful non-viability result can be success. Return consequential findings to
    alignment; the spike's recommendation is not automatically an approved decision.
 
@@ -32,4 +30,5 @@ Return to `soft-factory-v2:factory-align`.
 
 ## Skill layout
 
-- `SKILL.md`: self-contained instructions.
+- `SKILL.md`: instructions.
+- `assets/formats/format-spike-report-v1.0.0.example.md`: SPIKE_REPORT_V1 contract.
