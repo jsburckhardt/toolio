@@ -29,7 +29,7 @@
     {
       "name": "soft-factory-v2",
       "description": "Seven self-contained delivery skills: onboarding, alignment, design, slicing, spikes, delivery and independent acceptance.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "plugins/soft-factory-v2"
     },
     {

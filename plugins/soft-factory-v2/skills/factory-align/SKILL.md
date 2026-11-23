@@ -10,9 +10,10 @@ metadata:
 
 Reach shared understanding before implementation, rather than eagerly generating a plan.
 
-1. Read the issue, relevant code/tests and existing decisions. Find facts yourself;
-   verify tool/API claims or label them unverified. Do not share private inputs with
-   external research services.
+1. If root `AGENTS.md` lacks the `soft-factory-v2` section, run
+   `soft-factory-v2:factory-onboard` first. Read the issue, relevant code/tests and
+   existing decisions. Find facts yourself; verify tool/API claims or label them
+   unverified. Do not share private inputs with external research services.
 2. Map decisions by prerequisites. Ask the currently answerable questions through
    `ask_user` in numbered rounds, with recommendations that "yes" accepts. Wait for
    answers before asking dependent questions. Challenge weak proposals.
