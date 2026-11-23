@@ -8,6 +8,7 @@ Reusable Copilot agents, skills, and engineering workflow plugins.
 | --- | --- |
 | `soft-factory-agents` | Soft Factory engineering pipeline agents: RPIV (Research, Plan, Implement, Verify), plus bootstrap, onboarding, issue generation, and the Agnostic Prompt Standard generator. |
 | `soft-factory-skills` | Soft Factory skills: RPIV (`rpiv`, `rpiv-research`, `rpiv-planner`, `rpiv-implementer`, `rpiv-verifier`) plus `bootstrap`, `onboard-repo`, `issue-generator`, `excali`, `harness-cli-it`, and the Agnostic Prompt Standard, with shared templates. |
+| `soft-factory-v2` | Seven self-contained delivery skills: onboarding, alignment, design, slicing, spikes, delivery and independent acceptance. V1 is unchanged. |
 | `soft-factory-extras` | Extra Soft Factory agents and skills, including the `deep-research` orchestrator that runs an Exa-powered, Microsoft-preferring research pipeline, the `prd-to-gh-issues` agent that turns a PRD into a linked GitHub issue backlog, and the `pr-review-complement` skill. |
 | `visual-explainer` | Generate self-contained HTML pages for diagrams, diff/plan reviews, project recaps, comparison tables, and slide decks. |
 
@@ -55,5 +56,6 @@ Install a plugin:
 ```bash
 copilot plugin install soft-factory-agents@toolio
 copilot plugin install soft-factory-skills@toolio
+copilot plugin install soft-factory-v2@toolio
 copilot plugin install visual-explainer@toolio
 ```
