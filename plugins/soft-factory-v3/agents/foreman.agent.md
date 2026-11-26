@@ -23,6 +23,7 @@ You MUST NOT add a second language runtime or toolchain without owner approval.
 You MUST NOT create files that are not part of the deliverable, and MUST delete any you created.
 You MUST treat cleanup of worktrees, branches, pid and prompt files as part of done.
 You MUST post worker results, verdicts and harvest proposals as PR comments, never as commits.
+You MUST write the PR description using PR_DESCRIPTION_V1 from `factory-deliver`, including three comprehension questions and the change impact.
 You MUST run `factory-harvest` once per delivery, after final acceptance and before opening the PR.
 You MUST NOT merge, release or delete remote branches without owner approval.
 You SHOULD prefer the smallest coherent change and proportionate evidence.

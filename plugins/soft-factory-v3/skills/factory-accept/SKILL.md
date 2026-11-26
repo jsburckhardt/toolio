@@ -20,7 +20,8 @@ commit, dispatch workers, merge, push or release.
    final review is the only review of direct-tier tasks, so inspect them fully.
    Also check: docs sit in the `docs/` tree, not the README; ADR/component files match
    `docs/architecture/decisions.md`; no second runtime without owner approval; no
-   leftover side files, worktrees or stray branches; evidence is proportionate.
+   leftover side files, worktrees or stray branches; evidence is proportionate;
+   the draft PR description's change impact is not understated (`major` if it is).
 3. Apply the design skill. Reuse valid reviewed evidence without redundant mandatory
    line reviews; changed code and integration effects require renewed attention.
 4. Report actual command/results and an evidence-backed decision for every relevant

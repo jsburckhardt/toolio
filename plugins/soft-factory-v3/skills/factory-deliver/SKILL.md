@@ -31,9 +31,12 @@ scripts, scaffolding, side files or a new documentation hierarchy.
 7. After integrating a task run `scripts/worker.sh clean <task>`: it removes the
    worktree, merged branch, pid and prompt, and keeps the log until the PR merges.
    Remove any file you created that is not part of the deliverable.
-8. Obtain final `factory-accept` on the combined SHA (this covers direct tasks),
-   run `factory-harvest`, then open one PR. Post worker results, verdicts and
-   harvest proposals as PR comments, not commits. Merge and release need the owner.
+8. Draft the PR description using
+   [format-pr-description](assets/formats/format-pr-description-v1.0.0.example.md),
+   obtain final `factory-accept` on the combined SHA and that draft (this covers
+   direct tasks), run `factory-harvest`, then open one PR. Post worker results,
+   verdicts and harvest proposals as PR comments, not commits. Merge and release
+   need the owner, whatever the change impact.
 
 ## Implementer
 
@@ -50,7 +53,8 @@ including `## Guesses`. Escalate material behaviour/contract/dependency changes.
 
 1. [format-implementer-prompt](assets/formats/format-implementer-prompt-v1.0.0.example.md)
 2. [format-implementer-result](assets/formats/format-implementer-result-v1.0.0.example.md)
-3. Use `factory-design`, `factory-accept`, `factory-harvest`; return consequential
+3. [format-pr-description](assets/formats/format-pr-description-v1.0.0.example.md)
+4. Use `factory-design`, `factory-accept`, `factory-harvest`; return consequential
    discoveries to `factory-align`.
 
 ## Skill layout
@@ -59,3 +63,4 @@ including `## Guesses`. Escalate material behaviour/contract/dependency changes.
 - `scripts/worker.sh`: start, stop or clean one worktree implementer (bash, no dependencies).
 - `assets/formats/format-implementer-prompt-v1.0.0.example.md`: IMPLEMENTER_PROMPT_V1 contract.
 - `assets/formats/format-implementer-result-v1.0.0.example.md`: IMPLEMENTER_RESULT_V1 contract.
+- `assets/formats/format-pr-description-v1.0.0.example.md`: PR_DESCRIPTION_V1 contract.
