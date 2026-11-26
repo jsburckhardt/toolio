@@ -28,9 +28,15 @@
     },
     {
       "name": "soft-factory-v2",
-      "description": "Seven self-contained delivery skills: onboarding, alignment, design, slicing, spikes, delivery and independent acceptance.",
+      "description": "Superseded by soft-factory-v3. Seven self-contained delivery skills: onboarding, alignment, design, slicing, spikes, delivery and independent acceptance.",
       "version": "0.2.0",
       "source": "plugins/soft-factory-v2"
+    },
+    {
+      "name": "soft-factory-v3",
+      "description": "Foreman agent plus eight delivery skills: onboarding, alignment, design, slicing, spikes, delivery, independent acceptance and harvest. Vendored-friendly.",
+      "version": "0.1.0",
+      "source": "plugins/soft-factory-v3"
     },
     {
       "name": "visual-explainer",
