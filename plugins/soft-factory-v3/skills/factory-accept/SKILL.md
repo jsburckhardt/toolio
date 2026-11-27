@@ -18,8 +18,8 @@ commit, dispatch workers, merge, push or release.
    integration repair, examine conflict/fix changes from the last good head. For final
    acceptance, verify the combined result, all ACs and current full/integration checks;
    final review is the only review of direct-tier tasks, so inspect them fully.
-   Also check: docs sit in the `docs/` tree, not the README; ADR/component files match
-   `docs/architecture/decisions.md`; no second runtime without owner approval; no
+   Also check: docs sit in the `docs/` tree, not the README; `llms.txt` links
+   resolve; ADR/component files match `docs/architecture/decisions.md`; no second runtime without owner approval; no
    leftover side files, worktrees or stray branches; evidence is proportionate;
    the draft PR description's change impact is not understated (`major` if it is).
 3. Apply the design skill. Reuse valid reviewed evidence without redundant mandatory

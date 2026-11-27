@@ -35,7 +35,7 @@
     {
       "name": "soft-factory-v3",
       "description": "Foreman agent plus eight delivery skills: onboarding, alignment, design, slicing, spikes, delivery, independent acceptance and harvest. Vendored-friendly.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "plugins/soft-factory-v3"
     },
     {

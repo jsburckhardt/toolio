@@ -37,7 +37,7 @@ FRICTION_SIGNALS: "repair worker, failed review, escalation, owner correction, t
 SYNC_ITEMS: TEXT<<
 1. Brief: task statuses, tiers, worker fields and evidence links match reality.
 2. Decisions: every ADR and component file has a row in docs/architecture/decisions.md and statuses agree.
-3. Docs: the docs page each task touched reflects the change; the README links instead of repeating.
+3. Docs: the docs page each task touched reflects the change; the README and llms.txt link instead of repeating, and their links resolve.
 4. Commands: AGENTS.md commands match the justfile or build scripts that exist.
 5. Links: issue, brief and PR reference each other.
 6. Cleanup: no stale .trees/ worktrees, pid or prompt files, merged factory/* branches or side files.
