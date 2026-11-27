@@ -6,6 +6,7 @@
 
 ```text
 README.md                        what it is, quickstart, links
+llms.txt                         map for models: summary and key doc links
 docs/
   index.md                       map of the docs
   getting-started.md             install and first run

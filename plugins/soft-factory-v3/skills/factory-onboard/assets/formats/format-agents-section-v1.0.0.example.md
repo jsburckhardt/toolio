@@ -13,6 +13,7 @@ the `factory-*` skills in `.github/skills/`. Vendored from <SOURCE> at <COMMIT>.
 ## Docs
 - Keep README short: what it is, quickstart, links. Everything else goes in `docs/`.
 - Read `docs/architecture/decisions.md` first; it indexes ADRs and components.
+- Keep `llms.txt` links current when docs pages are added, moved or removed.
 - Dated files are `YYYYMMDD-<slug>.md` (work, adr, spikes).
 
 ## Rules
